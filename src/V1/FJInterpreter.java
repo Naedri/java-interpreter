@@ -21,8 +21,12 @@ public class FJInterpreter extends Object {
     public static Expression eval(Map classTable, CreateObject expression) {
         String p2 = null;
 
+        if(true) {
+            return new CreateObject();
+        } else {
+            return null;
+        }
 
-        return null;
     }
 
     public static Expression eval(Map classTable, MethodInvk expression) {
