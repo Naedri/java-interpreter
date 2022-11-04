@@ -1,4 +1,4 @@
 package Utils;
 
-public class CreateObject extends Expression {
+public class CreateObject implements Expression {
 }

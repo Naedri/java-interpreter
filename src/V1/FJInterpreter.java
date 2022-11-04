@@ -1,13 +1,13 @@
 package V1;
 
-import Utils.CreateObject;
-import Utils.Expression;
-import Utils.FieldAccess;
-import Utils.MethodInvk;
+import Utils.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class FJInterpreter extends Object {
+    //TODO conversion de eval par des surcharges
+    //CT = Map de type String (pour le nom de la classe), Expression (le type Expr en haskell)
 
     /**
      * Function eval'
@@ -18,21 +18,36 @@ public class FJInterpreter extends Object {
     //TODO définir type retour
     //Expr pour surcharge ?
     //Retourne soit une valeur soit null
-    public static Expression eval(Map classTable, CreateObject expression) {
-        String p2 = null;
+    //TODO conversion de la méthode
+    public static Expr eval(Map<String, Expr> classTable, CreateObject expression) {
+        Map p2 = new HashMap<String, Expr>();
 
+        for(Map.Entry<String, Expr> entry : classTable.entrySet()) {
+            //Expr reduction = eval(classTable, entry.getValue());
+        }
+
+        /*
         if(true) {
             return new CreateObject();
+            //eval' ct (CreateObject c p) = -- RC-New-Arg
         } else {
-            return null;
-        }
+            return null; //Maybe Nothing
+        }*/
+
+        return null;
 
     }
 
-    public static Expression eval(Map classTable, MethodInvk expression) {
+    //TODO doit tester R-Field et RC-Field
+    public static Expr eval(Map<String, Expr> classTable, Expr.FieldAccess expression) {
 
         return null;
     }
+
+   /* public static Expression eval(Map<String, Expression> classTable, MethodInvk expression) {
+
+        return null;
+    }*/
 
     //eval' ct cc@(Cast t e)
     /*public static Expression eval(Map classTable, CreateObject expression) {
