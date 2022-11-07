@@ -5,6 +5,7 @@ import java.util.SortedSet;
 
 public abstract class Expr extends Object {
 
+    /*
     public Expr(SortedSet<Object> params) {
         Expr res;
 
@@ -21,6 +22,7 @@ public abstract class Expr extends Object {
         }
         //if(o1 expr et o2 string) --> FieldAccess
     }
+    */
 
     /*
     data Expr = Var String                           -- Variable
@@ -36,6 +38,7 @@ public abstract class Expr extends Object {
     //TODO passer tous les paramètres en private
     //TODO eval doit tester R-Field et RC-Field
 
+    /*
     public class Var extends Expr {
 
     }
@@ -71,4 +74,6 @@ public abstract class Expr extends Object {
         public Closure() {
         }
     };
+
+    */
 }

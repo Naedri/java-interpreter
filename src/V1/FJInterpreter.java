@@ -39,10 +39,10 @@ public class FJInterpreter extends Object {
     }
 
     //TODO doit tester R-Field et RC-Field
+    /*
     public static Expr eval(Map<String, Expr> classTable, Expr.FieldAccess expression) {
-
         return null;
-    }
+    }*/
 
    /* public static Expression eval(Map<String, Expression> classTable, MethodInvk expression) {
 

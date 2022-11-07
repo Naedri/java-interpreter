@@ -1,36 +1,96 @@
 package Utils;
 
 import java.util.EnumMap;
-import java.util.Map;
+import java.util.HashMap;
 
-// objectif : définir les objets indiqués dans le Figure 1
+/**
+ * To define object from the paper
+ */
 public class Definition {
 
+    /**
+     * Type as an enum
+     * TODO: evaluate if we want to keep it
+     */
     public enum Type {
         CLASS,
         INTERFACE
     }
 
+    /**
+     * Type
+     */
     public abstract class T extends Object {
-        public Declaration d;
-        T(){ super();};
+        public D d;
+        public String name;
+        public Type type;
+        public T(){
+            super();
+            this.d = new L();
+            this.name = "str";
+            this.type = Type.CLASS;
+        };
+        public T(D d, String name, Type type) {
+            super();
+            this.d = d;
+            this.name = name;
+            this.type = type;
+        };
     }
 
+    /**
+     * Classe
+     */
     public class C extends T {
         C(){ super();};
     }
 
-    // TODO maybe class should be replaced by interface
+    /**
+     * Interface
+     */
     public class I extends T {
         I(){ super();};
     }
+    /**
+     * Declaration
+     */
+    public abstract class D {
+        public CT ct;
+    }
 
-    public abstract class Declaration { }
-
-    public class L extends Declaration { };
-    public class P extends Declaration { };
-
-    public class CT extends EnumMap<Type, Declaration> {
-        CT(){};
+    /**
+     * Class declaration
+     */
+    public class L extends D {
+        public L() {
+        }
     };
+
+    /**
+     * Interface declaration
+     */
+    public class P extends D {
+        public P() {
+        }
+
+    }
+
+    /**
+     * Component of Class Table :
+     * couple declaration composed of
+     * class or interface name and their associated declaration
+     * TODO : maybe to delete
+     */
+    public class Field {
+        String name;
+        D d;
+        Type type;
+    }
+
+    /**
+     * Class Table
+     * should be unique thus its type is String D, and not
+     * TODO singleton
+     */
+    public class CT extends HashMap<String, D> { }
 }
