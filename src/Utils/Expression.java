@@ -1,10 +1,13 @@
 package Utils;
 
-import java.util.Set;
-import java.util.SortedSet;
+public class Expression  {
+    public abstract class Expr extends Object {
 
-public abstract class Expr extends Object {
-
+    }
+    public class CreateObject extends Expr {
+        public CreateObject() {
+        }
+    };
     /*
     public Expr(SortedSet<Object> params) {
         Expr res;

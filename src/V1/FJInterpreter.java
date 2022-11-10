@@ -4,8 +4,9 @@ import Utils.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-public class FJInterpreter extends Object {
+public class FJInterpreter extends Object implements IInterpreter {
     //TODO conversion de eval par des surcharges
     //CT = Map de type String (pour le nom de la classe), Expression (le type Expr en haskell)
 
@@ -19,12 +20,13 @@ public class FJInterpreter extends Object {
     //Expr pour surcharge ?
     //Retourne soit une valeur soit null
     //TODO conversion de la méthode
-    public static Expr eval(Map<String, Expr> classTable, CreateObject expression) {
-        Map p2 = new HashMap<String, Expr>();
+    @Override
+    public Expression.Expr evalPrime(Definition.CT classTable, Expression.Expr expression) {
+        Map p2 = new HashMap<String, Expression>();
 
-        for(Map.Entry<String, Expr> entry : classTable.entrySet()) {
+       /* for(Map.Entry<String, Expr> entry : classTable.entrySet()) {
             //Expr reduction = eval(classTable, entry.getValue());
-        }
+        }*/
 
         /*
         if(true) {
@@ -35,7 +37,11 @@ public class FJInterpreter extends Object {
         }*/
 
         return null;
+    }
 
+    @Override
+    public Optional<Expression.Expr> subst(String[] paramNames, Expression.Expr[] params, Expression.Expr bodyExpression) {
+        return Optional.empty();
     }
 
     //TODO doit tester R-Field et RC-Field
