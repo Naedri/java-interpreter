@@ -1,6 +1,5 @@
 package Parser;
 
-import java.util.EnumMap;
 import java.util.HashMap;
 
 /**
@@ -13,43 +12,53 @@ public class Definition {
      * TODO: evaluate if we want to keep it
      */
     public enum Type {
-        CLASS,
-        INTERFACE
+        CLASS, // Definition.C,
+        INTERFACE // Definition.I
     }
 
     /**
-     * Type
+     * Type definition
+     * 𝑇 ::= 𝐶 | 𝐼
      */
     public abstract class T extends Object {
-        public D d;
         public String name;
+        public D d;
         public Type type;
-        public T(){
-            super();
-            this.d = new L();
-            this.name = "str";
-            this.type = Type.CLASS;
-        };
-        public T(D d, String name, Type type) {
-            super();
-            this.d = d;
+        public T[] extension; //TODO move into subclasses ?
+        public T[] implementation;
+        public T(String name, D d, Type type, T[] extension, T[] implementation) {
             this.name = name;
-            this.type = type; // signature du visiter
-        };
+            this.d = d;
+            this.type = type;
+            this.extension = extension;
+            this.implementation = implementation;
+        }
     }
 
     /**
-     * Classe
+     * Class type
      */
     public class C extends T {
-        C(){ super();};
+        /**
+         * data Class = Class String String [String] [(Type,String)] Constr [Method]
+         * Name of the class, list of superclasses, list of interfaces implemented, fields, constructor, list of methods
+         */
+        public C(String name, D d,  C[] extension, I[] implementation) {
+            super(name, d, Type.CLASS, extension, implementation );
+        }
     }
 
     /**
-     * Interface
+     * Interface type
      */
     public class I extends T {
-        I(){ super();};
+        /**
+         * data Interface = Interface String [String] [Sign] [Method]
+         * Name of the interface, list of superinterfaces, function signatures, Default method
+         */
+        public I(String name, D d, I[] extension) {
+            super(name, d, Type.INTERFACE, extension, null);
+        }
     }
     /**
      * Declaration
@@ -60,6 +69,7 @@ public class Definition {
 
     /**
      * Class declaration
+     * 𝐿 ::= class 𝐶 extends 𝐶 implements 𝐼 {𝑇 𝑓; 𝐾 𝑀}
      */
     public class L extends D {
         public L() {
@@ -68,11 +78,34 @@ public class Definition {
 
     /**
      * Interface declaration
+     * 𝑃 ::= interface 𝐼 extends 𝐼 {𝑆; default 𝑀}
      */
     public class P extends D {
         public P() {
         }
 
+    }
+
+    /**
+     * Constructor declaration
+     * 𝐾 ::= 𝐶(𝑇 𝑓) {super(𝑓); this.𝑓 = 𝑓; }
+     */
+    public class K {
+
+    }
+
+    /**
+     * Signature declaration (return type, method name and parameters)
+     * 𝑆 ::= 𝑇 m(𝑇 𝑥)
+     */
+    public class S {
+    }
+
+    /**
+     * Method
+     * 𝑀 ::= 𝑆 { return 𝑒; }
+     */
+    public class M {
     }
 
     /**
