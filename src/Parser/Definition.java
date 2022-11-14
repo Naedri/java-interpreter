@@ -73,9 +73,12 @@ public class Definition {
     }
     /**
      * Declaration
+     * //TODO remove as there is no field in an interface
      */
     public abstract class D {
+        // TODO choose one of the following :
         public CT ct;
+        // public Field[] fields;
     }
 
     /**
@@ -83,8 +86,9 @@ public class Definition {
      * 𝐿 ::= class 𝐶 extends 𝐶 implements 𝐼 {𝑇 𝑓; 𝐾 𝑀}
      */
     public class L extends D {
-        public L() {
-        }
+        public Field[] fields;
+        public K k;
+        public M[] ms;
     };
 
     /**
@@ -92,9 +96,8 @@ public class Definition {
      * 𝑃 ::= interface 𝐼 extends 𝐼 {𝑆; default 𝑀}
      */
     public class P extends D {
-        public P() {
-        }
-
+        public S s;
+        public M[] ms; //default methods
     }
 
     /**
@@ -102,7 +105,10 @@ public class Definition {
      * 𝐾 ::= 𝐶(𝑇 𝑓) {super(𝑓); this.𝑓 = 𝑓; }
      */
     public class K {
-
+        public String name;
+        public Field[] params;
+        public D[] superParams;
+        public InitiatedField[] initiatedFields;
     }
 
     /**
@@ -120,6 +126,17 @@ public class Definition {
      * 𝑀 ::= 𝑆 { return 𝑒; }
      */
     public class M {
+        public S signature;
+        public Expression.Expr body;
+    }
+
+    /**
+     * To initiate field by constructor from one of its parameter
+     * this.𝑓 = 𝑓;
+     */
+    public class InitiatedField {
+        public String fieldName;
+        public String paramName;
     }
 
     /**
