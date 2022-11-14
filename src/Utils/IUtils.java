@@ -13,6 +13,6 @@ public interface IUtils {
     public static class mtype(Definition.CT table, String method, String);
     public static class mbody(Definition.CT table, Class a, Class b);
     public static Boolean isValue(Definition.CT table, Expression.Expr exp);
-    public static Expression.Expr lambdaMark(Expression.Expr exp, Definition.Type a);
+    public static Expression.Expr lambdaMark(Expression.Expr exp, Definition.EType a);
     public static Expression.Expr removeRuntimeAnnotation(Expression.Expr exp);
 }

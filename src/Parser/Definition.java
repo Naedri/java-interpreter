@@ -11,9 +11,20 @@ public class Definition {
      * Type as an enum
      * TODO: evaluate if we want to keep it
      */
-    public enum Type {
+    public enum EType {
         CLASS, // Definition.C,
         INTERFACE // Definition.I
+    }
+
+    /**
+     * Type as a String
+     * FJ + Lambda nominal typing
+     */
+    public class Type {
+        public String type;
+        public Type(String type) {
+            this.type = type;
+        }
     }
 
     /**
@@ -23,13 +34,13 @@ public class Definition {
     public abstract class T extends Object {
         public String name;
         public D d;
-        public Type type;
-        public T[] extension; //TODO move into subclasses ?
+        public EType EType; //TODO: evaluate if we want to keep it
+        public T[] extension; //TODO: evaluate if we want to move it into subclasses ?
         public T[] implementation;
-        public T(String name, D d, Type type, T[] extension, T[] implementation) {
+        public T(String name, D d, EType EType, T[] extension, T[] implementation) {
             this.name = name;
             this.d = d;
-            this.type = type;
+            this.EType = EType;
             this.extension = extension;
             this.implementation = implementation;
         }
@@ -44,7 +55,7 @@ public class Definition {
          * Name of the class, list of superclasses, list of interfaces implemented, fields, constructor, list of methods
          */
         public C(String name, D d,  C[] extension, I[] implementation) {
-            super(name, d, Type.CLASS, extension, implementation );
+            super(name, d, EType.CLASS, extension, implementation );
         }
     }
 
@@ -57,7 +68,7 @@ public class Definition {
          * Name of the interface, list of superinterfaces, function signatures, Default method
          */
         public I(String name, D d, I[] extension) {
-            super(name, d, Type.INTERFACE, extension, null);
+            super(name, d, EType.INTERFACE, extension, null);
         }
     }
     /**
@@ -99,10 +110,13 @@ public class Definition {
      * 𝑆 ::= 𝑇 m(𝑇 𝑥)
      */
     public class S {
+        public T returnType;
+        public String name;
+        public Field[] params;
     }
 
     /**
-     * Method
+     * Method declaration
      * 𝑀 ::= 𝑆 { return 𝑒; }
      */
     public class M {
@@ -110,20 +124,18 @@ public class Definition {
 
     /**
      * Component of Class Table :
-     * couple declaration composed of
-     * class or interface name and their associated declaration
-     * TODO : maybe to delete
+     * according the article : "couple declaration composed of class or interface name and their associated declaration"
+     * according the code : `[(Type,String)]`
      */
     public class Field {
-        String name;
-        D d;
         Type type;
+        D d;
     }
 
     /**
      * Class Table
-     * should be unique thus its type is String D, and not an enum
-     * TODO singleton
+     * TODO how can we use Field class wrapper to type the hash map ?
+     * TODO singleton ? if so need a factory
      */
-    public class CT extends HashMap<String, D> { }
+    public class CT extends HashMap<Type, D> { }
 }
