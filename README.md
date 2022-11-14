@@ -1,1 +1,16 @@
 # java-interpreter
+
+## TODO
+
+### doc
+
+- [ ] add authors
+- [ ] add ref to paper
+- [ ] add objectives from paper
+- [ ] add glossary in latex
+- [ ] add class diagram (and find a way to update it on demand)
+
+### code
+
+- [ ] check that comments are in english
+- [ ] determine if we should use alias (e.i. S rather than Signature)
