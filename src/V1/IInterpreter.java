@@ -1,8 +1,8 @@
 package V1;
 
-import Utils.Definition;
-import Utils.Expression;
-import Utils.Expression.Expr;
+import Parser.Definition;
+import Parser.Expression;
+import Parser.Expression.Expr;
 
 import java.util.Optional;
 

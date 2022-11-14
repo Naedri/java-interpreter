@@ -1,5 +1,7 @@
-import Utils.Definition;
-import Utils.Expression;
+package Utils;
+
+import Parser.Definition;
+import Parser.Expression;
 
 public class FJUtils implements IUtils {
     public static class subtyping(Definition.CT table, Class a, Class b){ }

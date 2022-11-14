@@ -1,4 +1,4 @@
-package Utils;
+package Parser;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class Definition {
             super();
             this.d = d;
             this.name = name;
-            this.type = type;
+            this.type = type; // signature du visiter
         };
     }
 
@@ -89,7 +89,7 @@ public class Definition {
 
     /**
      * Class Table
-     * should be unique thus its type is String D, and not
+     * should be unique thus its type is String D, and not an enum
      * TODO singleton
      */
     public class CT extends HashMap<String, D> { }

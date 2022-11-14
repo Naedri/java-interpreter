@@ -1,4 +1,6 @@
-package Utils;
+package Parser;
+
+import Parser.Definition;
 
 /**
  * Component of Class Table :

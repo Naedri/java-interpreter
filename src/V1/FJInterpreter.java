@@ -1,6 +1,7 @@
 package V1;
 
-import Utils.*;
+import Parser.Definition;
+import Parser.Expression;
 
 import java.util.HashMap;
 import java.util.Map;

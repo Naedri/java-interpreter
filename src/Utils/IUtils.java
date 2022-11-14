@@ -1,5 +1,7 @@
-import Utils.Definition;
-import Utils.Expression;
+package Utils;
+
+import Parser.Definition;
+import Parser.Expression;
 
 import java.util.Optional;
 
