@@ -1,5 +1,14 @@
 package Parser;
 
+
+/**
+ * data Expr = Var String                               -- Variable
+ *           | FieldAccess Expr String                  -- Field Access
+ *           | MethodInvk Expr String [Expr]            -- Method Invocation
+ *           | CreateObject String [Expr]               -- Object Instantiation
+ *           | Cast String Expr                         -- Cast
+ *           | Closure [(Type,String)] Expr             -- Closure
+ */
 public class Expression  {
     public abstract class Expr extends Object {
 
@@ -26,16 +35,6 @@ public class Expression  {
         //if(o1 expr et o2 string) --> FieldAccess
     }
     */
-
-    /*
-    data Expr = Var String                           -- Variable
-          | FieldAccess Expr String                  -- Field Access
-          | MethodInvk Expr String [Expr]            -- Method Invocation
-          | CreateObject String [Expr]               -- Object Instantiation
-          | Cast String Expr                         -- Cast
-          | Closure [(Type,String)] Expr             -- Closure
-          deriving (Show, Eq)
-     */
 
 
     //TODO passer tous les paramètres en private
