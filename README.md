@@ -12,7 +12,7 @@
 
 ### code
 
-- [ ] TypeError class
+- [x] TypeError class
 - [ ] Expression
 - [ ] check that comments are in english
 - [ ] determine if we should use alias (e.i. S rather than Signature) => no alias available for java
