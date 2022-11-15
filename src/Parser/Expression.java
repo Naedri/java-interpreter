@@ -1,22 +1,76 @@
 package Parser;
 
-
 /**
  * data Expr = Var String                               -- Variable
- *           | FieldAccess Expr String                  -- Field Access
- *           | MethodInvk Expr String [Expr]            -- Method Invocation
- *           | CreateObject String [Expr]               -- Object Instantiation
- *           | Cast String Expr                         -- Cast
- *           | Closure [(Type,String)] Expr             -- Closure
+ * | FieldAccess Expr String                  -- Field Access
+ * | MethodInvk Expr String [Expr]            -- Method Invocation
+ * | CreateObject String [Expr]               -- Object Instantiation
+ * | Cast String Expr                         -- Cast
+ * | Closure [(Type,String)] Expr             -- Closure
  */
-public class Expression  {
-    public abstract class Expr extends Object {
-
+public class Expression {
+    /**
+     * expression
+     */
+    public abstract class Expr {
     }
+
+    /**
+     * variable
+     * 𝑒 ::= 𝑥
+     */
+    public class Var extends Expr {
+        public String name;
+    }
+
+    /**
+     * field access
+     * 𝑒 ::= 𝑒.𝑓
+     */
+    public class FieldAccess extends Expr {
+        public Expr parent;
+        public String name;
+    }
+
+    /**
+     * method invocation
+     * 𝑒 ::= 𝑒.m(𝑒)
+     */
+    public class MethodInvk extends Expr {
+        public Expr parent;
+        public String name;
+        public Expr[] params;
+    }
+
+    /**
+     * object creation/instantiation
+     * 𝑒 ::= new 𝐶(𝑒)
+     */
     public class CreateObject extends Expr {
-        public CreateObject() {
-        }
-    };
+        public String name; // of the class
+        public Expr[] params;
+    }
+
+    /**
+     * cast
+     * 𝑒 ::= (𝑇) 𝑒
+     */
+    public class Cast extends Expr {
+        public String f; // of the type
+        public Expr expr;
+    }
+
+    /**
+     * closure / 𝜆-expression
+     * 𝑒 ::= (𝑇 𝑥) → 𝑒
+     */
+    public class Closure extends Expr {
+        public Definition.Field[] params;
+        public Expr body;
+    }
+
+    //TODO passer tous les paramètres en private
+    //TODO eval doit tester R-Field et RC-Field
     /*
     public Expr(SortedSet<Object> params) {
         Expr res;
@@ -33,49 +87,5 @@ public class Expression  {
             res = null;
         }
         //if(o1 expr et o2 string) --> FieldAccess
-    }
-    */
-
-
-    //TODO passer tous les paramètres en private
-    //TODO eval doit tester R-Field et RC-Field
-
-    /*
-    public class Var extends Expr {
-
-    }
-
-    public class FieldAccess extends Expr {
-        public Expr expression;
-        public String f;
-
-        public FieldAccess(Expr expr, String f) {
-
-        }
-    };
-
-    public class MethodInvk extends Expr {
-        public Expr expr;
-        public String m;
-        public Set<Expr> p;
-
-        public MethodInvk(Expr expr, String m, Set<Expr> p) {
-        }
-    };
-
-    public class CreateObject extends Expr {
-        public CreateObject() {
-        }
-    };
-    public class Cast extends Expr {
-        public Cast(Expr expr, String f) {
-        }
-    };
-
-    public class Closure extends Expr {
-        public Closure() {
-        }
-    };
-
-    */
+    }*/
 }
