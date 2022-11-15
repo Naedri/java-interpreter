@@ -1,7 +1,7 @@
 package Parser;
 
 /**
- * data Expr = Var String                               -- Variable
+ * data Expr = Var String                     -- Variable
  * | FieldAccess Expr String                  -- Field Access
  * | MethodInvk Expr String [Expr]            -- Method Invocation
  * | CreateObject String [Expr]               -- Object Instantiation
@@ -21,6 +21,10 @@ public class Expression {
      */
     public class Var extends Expr {
         public String name;
+
+        public Var(String name) {
+            this.name = name;
+        }
     }
 
     /**
@@ -30,6 +34,11 @@ public class Expression {
     public class FieldAccess extends Expr {
         public Expr parent;
         public String name;
+
+        public FieldAccess(Expr parent, String name) {
+            this.parent = parent;
+            this.name = name;
+        }
     }
 
     /**
@@ -40,6 +49,12 @@ public class Expression {
         public Expr parent;
         public String name;
         public Expr[] params;
+
+        public MethodInvk(Expr parent, String name, Expr[] params) {
+            this.parent = parent;
+            this.name = name;
+            this.params = params;
+        }
     }
 
     /**
@@ -49,6 +64,11 @@ public class Expression {
     public class CreateObject extends Expr {
         public String name; // of the class
         public Expr[] params;
+
+        public CreateObject(String name, Expr[] params) {
+            this.name = name;
+            this.params = params;
+        }
     }
 
     /**
@@ -58,6 +78,11 @@ public class Expression {
     public class Cast extends Expr {
         public String f; // of the type
         public Expr expr;
+
+        public Cast(String f, Expr expr) {
+            this.f = f;
+            this.expr = expr;
+        }
     }
 
     /**
@@ -67,6 +92,11 @@ public class Expression {
     public class Closure extends Expr {
         public Definition.Field[] params;
         public Expr body;
+
+        public Closure(Definition.Field[] params, Expr body) {
+            this.params = params;
+            this.body = body;
+        }
     }
 
     //TODO passer tous les paramètres en private
