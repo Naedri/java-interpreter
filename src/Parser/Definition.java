@@ -5,11 +5,24 @@ import java.util.HashMap;
 /**
  * To define object from the paper
  */
+// TODO: evaluate if we want to split the class into separated files
 public class Definition {
-    // TODO: evaluate if we want to split the class into separated files
-    public Definition() {
+    private static Definition instance;
+
+    public static Definition getInstance() {
+        if (instance == null) {
+            instance = new Definition();
+        }
+
+        return instance;
     }
 
+    private Definition() {
+    }
+
+   /* public Type constructorType(String name) {
+        return new Type(name);
+    }*/
 
     /*********************Lambda syntactic constructors***************************************/
     /**
@@ -271,8 +284,10 @@ public class Definition {
     /**
      * Γ to represent an environment
      */
-    public class Environment extends HashMap<Variable, Type> {
-
+    //TODO we should have a Singleton for this
+    public static class Environment extends HashMap<Variable, Type> {
+        public Environment() {
+        }
     }
 
 
@@ -281,11 +296,11 @@ public class Definition {
      * TODO how can we use Field class wrapper to type the hash map ?
      * TODO singleton ? if so need a factory
      */
-    public class CT extends HashMap<Type, T> {
+    //TODO we should have a Singleton for this (only one dictionnary for one app)
+    public static class CT extends HashMap<Type, T> {
         public CT() {
         }
     }
-
 
 
 }
