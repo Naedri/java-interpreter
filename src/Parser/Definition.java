@@ -33,7 +33,7 @@ public class Definition {
         public EType EType; //TODO: evaluate if we want to keep it
         public String name;
         public T[] extensions;
-        public T[] implementations;
+        public T[] implementations; //TODO I[] instead of T[] ?     //TODO List instead [] to use contains ?
         public D declaration;
 
         public T(EType EType, String name, T[] extensions, T[] implementations, D declaration) {
@@ -62,7 +62,8 @@ public class Definition {
 
         /**
          * data Class = Class String String [String] [(Type,String)] Constr [Method]
-         * Name of the class, superclasses, list of interfaces implemented, list of fields, constructor, list of methods
+         * Name of the class, name of the superclass, list of interfaces implemented, list of fields, constructor, list of methods
+         * TODO params ?
          */
         public C(String name, C extension, I[] implementations, L declaration) {
             super(EType.CLASS, name, new C[]{extension}, implementations, declaration);
@@ -92,7 +93,7 @@ public class Definition {
     /**
      * Declaration
      */
-    public class D {
+    public abstract class D {
         //either default methods (interface) or concrete methods (class)
         public M[] ms;
 
@@ -262,6 +263,11 @@ public class Definition {
 
         public Type(String typeName) {
             this.name = typeName;
+        }
+
+
+        public boolean equals(Type typeToCompare) {
+            return name.contentEquals(typeToCompare.name);
         }
     }
 

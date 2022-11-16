@@ -6,7 +6,7 @@ import Parser.Expression;
 import java.util.Optional;
 
 public interface IUtils {
-    public  Boolean subtyping(Definition.CT table, Definition.T a, Definition.T b);
+    public  Boolean subtyping(Definition.CT table, String a, String b);
     /*public  Optional<> fields(Definition.CT table, Class a, Class b);
     public  class absmethods(Definition.CT table, Class a, Class b);
     public  class methods(Definition.CT table, Class a, Class b);
