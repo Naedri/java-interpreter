@@ -10,27 +10,8 @@ public class Definition {
     public Definition() {
     }
 
-    /**
-     * Type as an enum
-     * TODO: evaluate if we want to keep it
-     */
-    public enum EType {
-        CLASS, // Definition.C,
-        INTERFACE // Definition.I
-    }
 
-    /**
-     * Type as a String
-     * FJ + Lambda nominal typing
-     */
-    public class Type {
-        public String type;
-
-        public Type(String type) {
-            this.type = type;
-        }
-    }
-
+    /*********************Lambda syntactic constructors***************************************/
     /**
      * Type definition
      * 𝑇 ::= 𝐶 | 𝐼
@@ -136,7 +117,6 @@ public class Definition {
         }
     }
 
-    ;
 
     /**
      * Interface declaration
@@ -250,13 +230,62 @@ public class Definition {
         }
     }
 
+    /*********************Lambda nominal typing***************************************/
+    /**
+     * Type as an enum
+     * TODO: evaluate if we want to keep it
+     */
+    public enum EType {
+        CLASS, // Definition.C,
+        INTERFACE // Definition.I
+    }
+
+    /**
+     * Type as a String
+     * FJ + Lambda nominal typing
+     */
+    public class Type {
+        public String name;
+
+        public Type(String typeName) {
+            this.name = typeName;
+        }
+    }
+
+    /*********************String name wrappers***************************************/
+
+    /**
+     * Wrapper for variable names
+     */
+    public class Variable {
+        public String name;
+
+        public Variable(String variableName) {
+            this.name = variableName;
+        }
+    }
+
+
+    /*********************Lambda Auxilliary definitions***************************************/
+
+    /**
+     * Γ to represent an environment
+     */
+    public class Environment extends HashMap<Variable, Type> {
+
+    }
+
+
     /**
      * Class Table
      * TODO how can we use Field class wrapper to type the hash map ?
      * TODO singleton ? if so need a factory
      */
-    public class CT extends HashMap<Type, String> {
+    public class CT extends HashMap<Type, T> {
         public CT() {
         }
     }
+
+
+
 }
