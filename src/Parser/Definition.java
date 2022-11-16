@@ -1,12 +1,14 @@
 package Parser;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * To define object from the paper
  */
 public class Definition {
+    // TODO: evaluate if we want to split the class into separated files
+    public Definition() {
+    }
 
     /**
      * Type as an enum
@@ -23,6 +25,7 @@ public class Definition {
      */
     public class Type {
         public String type;
+
         public Type(String type) {
             this.type = type;
         }
@@ -32,80 +35,127 @@ public class Definition {
      * Type definition
      * 𝑇 ::= 𝐶 | 𝐼
      */
-    public abstract class T extends Object {
+    public abstract class T {
         public EType EType; //TODO: evaluate if we want to keep it
         public String name;
-        public T[] extensions; //TODO: evaluate if we want to move it into subclasses ?
-        public T[] implementations; //TODO: evaluate if we want to move it into subclasses ?
-        public T(EType EType, String name, T[] extensions, T[] implementations) {
-            this.name = name;
+        public T[] extensions;
+        public T[] implementations;
+        public D declaration;
+
+        public T(EType EType, String name, T[] extensions, T[] implementations, D declaration) {
             this.EType = EType;
+            this.name = name;
             this.extensions = extensions;
             this.implementations = implementations;
+            this.declaration = declaration;
+        }
+
+        public T(EType EType, String name, T[] extensions, D declaration) {
+            this.EType = EType;
+            this.name = name;
+            this.extensions = extensions;
+            this.implementations = new I[]{};
+            this.declaration = declaration;
         }
     }
 
     /**
      * Class type
+     * 𝑇 ::= 𝐶
      */
     public class C extends T {
-        public Field[] fields; public K k; public M[] ms;
+        public L declaration;
+
         /**
          * data Class = Class String String [String] [(Type,String)] Constr [Method]
-         * Name of the class, list of superclasses, list of interfaces implemented, fields, constructor, list of methods
+         * Name of the class, superclasses, list of interfaces implemented, list of fields, constructor, list of methods
          */
-        public C(String name, C extension, I[] implementations, Field[] fields, K k, M[] ms) {
-            super( EType.CLASS, name, new C[]{extension}, implementations );
-            this.fields = fields;
-            this.k = k;
-            this.ms = ms;
+        public C(String name, C extension, I[] implementations, L declaration) {
+            super(EType.CLASS, name, new C[]{extension}, implementations, declaration);
         }
-        public C(String name, K k) {
-            super( EType.CLASS, name, new C[]{new C("Object", k)}, new I[]{} );
-            this.fields =  new Field[]{};
-            this.k = k;
-            this.ms = new M[]{};
+
+        // we still have to ask for the declaration in order to retrieve the constructor even if there is no field
+        public C(String name, L declaration) {
+            super(EType.CLASS, name, new C[]{new C("Object", new L(new K("ObjectConstructor")))}, declaration);
         }
     }
 
     /**
      * Interface type
+     * 𝑇 ::= 𝐼
+     * 𝑃 ::= interface 𝐼 extends 𝐼 {𝑆; default 𝑀}
      */
     public class I extends T {
         /**
          * data Interface = Interface String [String] [Sign] [Method]
          * Name of the interface, list of superinterfaces, function signatures, Default method
          */
-        public I(String name, I[] extensions) {
-            super(EType.INTERFACE, name, extensions, new T[]{});
+        public I(String name, I[] extensions, P declaration) {
+            super(EType.INTERFACE, name, extensions, new T[]{}, declaration);
+        }
+    }
+
+    /**
+     * Declaration
+     */
+    public class D {
+        //either default methods (interface) or concrete methods (class)
+        public M[] ms;
+
+        public D(M[] ms) {
+            this.ms = ms;
+        }
+
+        public D() {
+            this.ms = new M[]{};
         }
     }
 
     /**
      * Class declaration
-     * 𝐿 ::= class 𝐶 extends 𝐶 implements 𝐼 {𝑇 𝑓; 𝐾 𝑀}
+     * 𝐿 ::= class 𝐶 {𝑇 𝑓; 𝐾 𝑀}
      */
-    public class L {
+    public class L extends D {
         public Field[] fields;
-        public K k;
-        public M[] ms;
+        public K k; // constructor
+
         public L(Field[] fields, K k, M[] ms) {
+            super(ms);
             this.fields = fields;
             this.k = k;
-            this.ms = ms;
         }
-    };
+
+        public L(Field[] fields, K k) {
+            this.fields = fields;
+            this.k = k;
+        }
+
+        public L(K k) {
+            this.fields = new Field[]{};
+            this.k = k;
+        }
+    }
+
+    ;
 
     /**
      * Interface declaration
-     * 𝑃 ::= interface 𝐼 extends 𝐼 {𝑆; default 𝑀}
+     * 𝑃 ::= interface 𝐼 {𝑆; default 𝑀}
      */
-    public class P {
-        public S s;
-        public M[] ms; //default methods
-        public P(S s, M[] ms) {
+    public class P extends D {
+        public S[] s; //signatures
+
+        public P(M[] ms, S[] s) {
+            super(ms);
             this.s = s;
-            this.ms = ms;
+        }
+
+        public P(S[] s) {
+            this.s = s;
+        }
+
+        public P() {
+            this.s = new S[]{};
         }
     }
 
@@ -114,15 +164,23 @@ public class Definition {
      * 𝐾 ::= 𝐶(𝑇 𝑓) {super(𝑓); this.𝑓 = 𝑓; }
      */
     public class K {
-        public String name;
+        public String name; //class name
         public Field[] params;
         public String[] superParams;
         public InitiatedField[] initiatedFields;
+
         public K(String name, Field[] params, String[] superParams, InitiatedField[] initiatedFields) {
             this.name = name;
             this.params = params;
             this.superParams = superParams;
             this.initiatedFields = initiatedFields;
+        }
+
+        public K(String name) {
+            this.name = name;
+            this.params = new Field[]{};
+            this.superParams = new String[]{};
+            this.initiatedFields = new InitiatedField[]{};
         }
     }
 
@@ -131,13 +189,21 @@ public class Definition {
      * 𝑆 ::= 𝑇 m(𝑇 𝑥)
      */
     public class S {
-        public T returnType;
+        public Type returnType;
         public String name;
         public Field[] params;
-        public S(T returnType, String name, Field[] params) {
+
+        public S(Type returnType, String name, Field[] params) {
             this.returnType = returnType;
             this.name = name;
             this.params = params;
+        }
+
+        public S(Type returnType, String name) {
+            this.returnType = returnType;
+            this.name = name;
+            this.params = new Field[]{};
+            ;
         }
     }
 
@@ -148,6 +214,7 @@ public class Definition {
     public class M {
         public S signature;
         public Expression.Expr body;
+
         public M(S signature, Expression.Expr body) {
             this.signature = signature;
             this.body = body;
@@ -161,6 +228,7 @@ public class Definition {
     public class InitiatedField {
         public String fieldName;
         public String paramName;
+
         public InitiatedField(String fieldName, String paramName) {
             this.fieldName = fieldName;
             this.paramName = paramName;
@@ -175,6 +243,7 @@ public class Definition {
     public class Field {
         Type type;
         String declaration;
+
         public Field(Type type, String declaration) {
             this.type = type;
             this.declaration = declaration;
