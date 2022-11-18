@@ -50,6 +50,7 @@ public class Definition {
             this.extensions = extensions;
             this.implementations = new I[]{};
             this.declaration = declaration;
+
         }
     }
 

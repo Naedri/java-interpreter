@@ -79,11 +79,29 @@ public class FJUtils implements IUtils {
         }
     }
 
-    /*@Override
-    public Optional fields(Definition.CT table, Class a, Class b) {
-        return Optional.empty();
+    //TODO return null ou liste vide ? --> return list pour utiliser la récursivité et compléter la liste suppérieure
+    @Override
+    public List<Definition.Field> fields(Definition.CT dictionnary, String nameT1) {
+        ArrayList<Definition.Field> listFields = new ArrayList<>();
+
+        if (nameT1.contentEquals("Object"))  return listFields;
+
+        Definition.Type castNameTypeT1 = Definition.getInstance().new Type(nameT1);
+
+        //case (Data.Map.lookup c ct) of Just (TClass (Class _ c'' _ attrs _ _)) ->
+        if(dictionnary.containsKey(castNameTypeT1) && dictionnary.get(castNameTypeT1).EType == Definition.EType.CLASS) {
+            Definition.C classT1 = (Definition.C) dictionnary.get(castNameTypeT1);
+            Definition.T superclassT1 = classT1.extensions[0];
+
+            //case (fields ct c'') of    Just base -> Just (base ++ attrs)
+            //We take the fiedls of the superclass T and we add the fields of the class 
+            listFields.addAll(fields(dictionnary, superclassT1.name));
+        }
+
+        return listFields;
     }
 
+    /*
     @Override
     public Boolean isValue(Definition.CT table, Expression.Expr exp) {
         return null;
