@@ -1,6 +1,8 @@
 package Parser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * To define object from the paper
@@ -112,22 +114,22 @@ public class Definition {
      * 𝐿 ::= class 𝐶 {𝑇 𝑓; 𝐾 𝑀}
      */
     public class L extends D {
-        public Field[] fields;
+        public List<Field> fields;
         public K k; // constructor
 
-        public L(Field[] fields, K k, M[] ms) {
+        public L(List<Field> fields, K k, M[] ms) {
             super(ms);
             this.fields = fields;
             this.k = k;
         }
 
-        public L(Field[] fields, K k) {
+        public L(List<Field> fields, K k) {
             this.fields = fields;
             this.k = k;
         }
 
         public L(K k) {
-            this.fields = new Field[]{};
+            this.fields = new ArrayList<>(){};
             this.k = k;
         }
     }
@@ -237,11 +239,11 @@ public class Definition {
      */
     public class Field {
         Type type;
-        String declaration;
+        String nameField;
 
-        public Field(Type type, String declaration) {
+        public Field(Type type, String nameField) {
             this.type = type;
-            this.declaration = declaration;
+            this.nameField = nameField;
         }
     }
 

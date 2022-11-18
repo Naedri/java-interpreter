@@ -69,7 +69,7 @@ public class FJUtils implements IUtils {
 
                     //Data.List.elem t' il || Data.List.any (\t'' -> subtyping ct t'' t') il
                     //"if (t2) (is one of the interfaces implemented by t1) OR "is there at least one of the interfaces implemented by t1 that is a subclass of t2"
-                    return (Arrays.stream(interfaceT1.implementations).toList().contains(castNameTypeT2) Arrays.stream(interfaceT1.implementations).anyMatch(i -> subtyping(dictionnary, i.name, nameT2));
+                    return (Arrays.stream(interfaceT1.implementations).toList().contains(castNameTypeT2) || Arrays.stream(interfaceT1.implementations).anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
                 }
             }
 
@@ -94,8 +94,9 @@ public class FJUtils implements IUtils {
             Definition.T superclassT1 = classT1.extensions[0];
 
             //case (fields ct c'') of    Just base -> Just (base ++ attrs)
-            //We take the fiedls of the superclass T and we add the fields of the class 
+            //We take the fiedls of the superclass T and we add the fields of the class
             listFields.addAll(fields(dictionnary, superclassT1.name));
+            listFields.addAll(classT1.declaration.fields);
         }
 
         return listFields;
