@@ -30,15 +30,16 @@ public class Expression {
     }
 
     /**
-     * field access
+     * field access = allow to access the attribute of a class (the ownerClass)
+     *
      * 𝑒 ::= 𝑒.𝑓
      */
     public class FieldAccess extends Expr {
-        public Expr parent;
+        public Expr ownerCLass;
         public String name;
 
-        public FieldAccess(Expr parent, String name) {
-            this.parent = parent;
+        public FieldAccess(Expr ownerCLass, String name) {
+            this.ownerCLass = ownerCLass;
             this.name = name;
         }
     }
@@ -92,10 +93,10 @@ public class Expression {
      * 𝑒 ::= (𝑇 𝑥) → 𝑒
      */
     public class Closure extends Expr {
-        public List<Definition.Field[]> params;
+        public List<Definition.Field> params;
         public Expr body;
 
-        public Closure(List<Definition.Field[]> params, Expr body) {
+        public Closure(List<Definition.Field> params, Expr body) {
             this.params = params;
             this.body = body;
         }

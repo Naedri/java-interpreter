@@ -238,8 +238,8 @@ public class Definition {
      * according the code : `[(Type,String)]`
      */
     public class Field {
-        Type type;
-        String nameField;
+        public Type type;
+        public String nameField;
 
         public Field(Type type, String nameField) {
             this.type = type;
@@ -311,6 +311,4 @@ public class Definition {
         }
     }
 
-
-    public Enum FJExpr = Variable, ;
 }

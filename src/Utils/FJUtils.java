@@ -31,8 +31,7 @@ public class FJUtils implements IUtils {
      */
     //TODO si on teste avant que t2 est une classe ou interface, on peut simplifier les tests
     //TODO passer en pattern visiteur
-    @Override
-    public Boolean subtyping(Definition.CT dictionnary, String nameT1, String nameT2) {
+    public static Boolean subtyping(Definition.CT dictionnary, String nameT1, String nameT2) {
         try {
             // compare if the two object
             if(nameT1.contentEquals(nameT2)) return true;
@@ -80,8 +79,7 @@ public class FJUtils implements IUtils {
     }
 
     //TODO return null ou liste vide ? --> return list pour utiliser la récursivité et compléter la liste suppérieure
-    @Override
-    public List<Definition.Field> fields(Definition.CT dictionnary, String nameT1) {
+    public static ArrayList<Definition.Field> fields(Definition.CT dictionnary, String nameT1) {
         ArrayList<Definition.Field> listFields = new ArrayList<>();
 
         if (nameT1.contentEquals("Object"))  return listFields;
@@ -113,8 +111,7 @@ public class FJUtils implements IUtils {
      * @param exp Expression to test
      * @return Boolean indicating if an expression is a value.
      */
-    @Override
-    public Boolean isValue(Definition.CT dictionnary, Expression.Expr exp) {
+    public static Boolean isValue(Definition.CT dictionnary, Expression.Expr exp) {
 
         //is an Object instanciation ?
         if(exp instanceof Expression.CreateObject) {
