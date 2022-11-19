@@ -102,13 +102,47 @@ public class FJUtils implements IUtils {
         return listFields;
     }
 
-    /*
+
+    /**
+     * -- Function: isValue
+     * -- Objective: Check if an expression represents a value.
+     * -- Params: Class table, Expression.
+     * -- Returns: Boolean indicating if an expression is a value.
+     * -----------------------------------------------------------
+     * @param dictionnary class table
+     * @param exp Expression to test
+     * @return Boolean indicating if an expression is a value.
+     */
     @Override
-    public Boolean isValue(Definition.CT table, Expression.Expr exp) {
-        return null;
+    public Boolean isValue(Definition.CT dictionnary, Expression.Expr exp) {
+
+        //is an Object instanciation ?
+        if(exp instanceof Expression.CreateObject) {
+            //isValue _ (CreateObject c []) = True
+            //is an Object instanciation with no Expr? Expr = CreateObject String [Expr] => same as the next, but "all (?) [] = True"
+            if(((Expression.CreateObject) exp).params.size() == 0) {
+                return true;
+            } else {
+                //isValue ct (CreateObject c p) = Data.List.all (isValue ct) p    --is an Object instanciation with an Expr ? Expr = CreateObject String [Expr]  => is there all element of p that are defined in CT ?
+                for(Expression.Expr expr : ((Expression.CreateObject) exp).params) {
+                    if(!isValue(dictionnary, expr)) return false;
+                }
+                return true;
+            }
+        }
+
+        //isValue ct (Closure _ _) = True
+        //is a lambda expression ?
+        if(exp instanceof Expression.Closure) return true;
+
+        //isValue ct (Cast _ (Closure _ _)) = True
+        //is a "cast" of a lambda expression ?
+        if(exp instanceof Expression.Cast && ((Expression.Cast) exp).expr instanceof Expression.Closure) return true;
+
+        return false;
     }
 
-    @Override
+    /*@Override
     public Expression.Expr lambdaMark(Expression.Expr exp, Definition.EType a) {
         return null;
     }

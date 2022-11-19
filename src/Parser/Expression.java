@@ -1,5 +1,7 @@
 package Parser;
 
+import java.util.List;
+
 /**
  * data Expr = Var String                     -- Variable
  * | FieldAccess Expr String                  -- Field Access
@@ -48,9 +50,9 @@ public class Expression {
     public class MethodInvk extends Expr {
         public Expr parent;
         public String name;
-        public Expr[] params;
+        public List<Expr> params;
 
-        public MethodInvk(Expr parent, String name, Expr[] params) {
+        public MethodInvk(Expr parent, String name, List<Expr> params) {
             this.parent = parent;
             this.name = name;
             this.params = params;
@@ -63,9 +65,9 @@ public class Expression {
      */
     public class CreateObject extends Expr {
         public String name; // of the class
-        public Expr[] params;
+        public List<Expr> params;
 
-        public CreateObject(String name, Expr[] params) {
+        public CreateObject(String name, List<Expr> params) {
             this.name = name;
             this.params = params;
         }
@@ -90,10 +92,10 @@ public class Expression {
      * 𝑒 ::= (𝑇 𝑥) → 𝑒
      */
     public class Closure extends Expr {
-        public Definition.Field[] params;
+        public List<Definition.Field[]> params;
         public Expr body;
 
-        public Closure(Definition.Field[] params, Expr body) {
+        public Closure(List<Definition.Field[]> params, Expr body) {
             this.params = params;
             this.body = body;
         }

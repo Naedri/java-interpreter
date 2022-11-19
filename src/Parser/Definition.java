@@ -162,11 +162,11 @@ public class Definition {
      */
     public class K {
         public String name; //class name
-        public Field[] params;
-        public String[] superParams;
-        public InitiatedField[] initiatedFields;
+        public List<Field> params;
+        public List<String> superParams;
+        public List<InitiatedField> initiatedFields;
 
-        public K(String name, Field[] params, String[] superParams, InitiatedField[] initiatedFields) {
+        public K(String name, List<Field> params, List<String> superParams, List<InitiatedField> initiatedFields) {
             this.name = name;
             this.params = params;
             this.superParams = superParams;
@@ -175,9 +175,9 @@ public class Definition {
 
         public K(String name) {
             this.name = name;
-            this.params = new Field[]{};
-            this.superParams = new String[]{};
-            this.initiatedFields = new InitiatedField[]{};
+            this.params = new ArrayList<Field>();
+            this.superParams = new ArrayList<String>();
+            this.initiatedFields = new ArrayList<InitiatedField>();
         }
     }
 
@@ -188,9 +188,9 @@ public class Definition {
     public class S {
         public Type returnType;
         public String name;
-        public Field[] params;
+        public List<Field> params;
 
-        public S(Type returnType, String name, Field[] params) {
+        public S(Type returnType, String name, List<Field> params) {
             this.returnType = returnType;
             this.name = name;
             this.params = params;
@@ -199,7 +199,7 @@ public class Definition {
         public S(Type returnType, String name) {
             this.returnType = returnType;
             this.name = name;
-            this.params = new Field[]{};
+            this.params = new ArrayList<Field>();
             ;
         }
     }
@@ -312,4 +312,5 @@ public class Definition {
     }
 
 
+    public Enum FJExpr = Variable, ;
 }

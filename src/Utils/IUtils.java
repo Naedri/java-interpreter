@@ -12,8 +12,8 @@ public interface IUtils {
     /*public  class absmethods(Definition.CT table, Class a, Class b);
     public  class methods(Definition.CT table, Class a, Class b);
     public  class mtype(Definition.CT table, String method, String);
-    public  class mbody(Definition.CT table, Class a, Class b);
+    public  class mbody(Definition.CT table, Class a, Class b);*/
     public  Boolean isValue(Definition.CT table, Expression.Expr exp);
-    public  Expression.Expr lambdaMark(Expression.Expr exp, Definition.EType a);
+    /*public  Expression.Expr lambdaMark(Expression.Expr exp, Definition.EType a);
     public  Expression.Expr removeRuntimeAnnotation(Expression.Expr exp);*/
 }
