@@ -36,22 +36,22 @@ public class Definition {
         public String name;
         public T[] extensions;
         public T[] implementations; //TODO I[] instead of T[] ?     //TODO List instead [] to use contains ?
-        public D declaration;
+        public TDeclaration tDeclaration;
 
-        public T(EType EType, String name, T[] extensions, T[] implementations, D declaration) {
+        public T(EType EType, String name, T[] extensions, T[] implementations, TDeclaration tDeclaration) {
             this.EType = EType;
             this.name = name;
             this.extensions = extensions;
             this.implementations = implementations;
-            this.declaration = declaration;
+            this.tDeclaration = tDeclaration;
         }
 
-        public T(EType EType, String name, T[] extensions, D declaration) {
+        public T(EType EType, String name, T[] extensions, TDeclaration tDeclaration) {
             this.EType = EType;
             this.name = name;
             this.extensions = extensions;
             this.implementations = new I[]{};
-            this.declaration = declaration;
+            this.tDeclaration = tDeclaration;
 
         }
     }
@@ -61,20 +61,20 @@ public class Definition {
      * 𝑇 ::= 𝐶
      */
     public class C extends T {
-        public L declaration;
+        public ClassDeclaration declaration;
 
         /**
          * data Class = Class String String [String] [(Type,String)] Constr [Method]
          * Name of the class, name of the superclass, list of interfaces implemented, list of fields, constructor, list of methods
          * TODO params ?
          */
-        public C(String name, C extension, I[] implementations, L declaration) {
+        public C(String name, C extension, I[] implementations, ClassDeclaration declaration) {
             super(EType.CLASS, name, new C[]{extension}, implementations, declaration);
         }
 
         // we still have to ask for the declaration in order to retrieve the constructor even if there is no field
-        public C(String name, L declaration) {
-            super(EType.CLASS, name, new C[]{new C("Object", new L(new K("ObjectConstructor")))}, declaration);
+        public C(String name, ClassDeclaration declaration) {
+            super(EType.CLASS, name, new C[]{new C("Object", new ClassDeclaration(new Constructor("ObjectConstructor")))}, declaration);
         }
     }
 
@@ -88,7 +88,7 @@ public class Definition {
          * data Interface = Interface String [String] [Sign] [Method]
          * Name of the interface, list of superinterfaces, function signatures, Default method
          */
-        public I(String name, I[] extensions, P declaration) {
+        public I(String name, I[] extensions, InterfaceDeclaration declaration) {
             super(EType.INTERFACE, name, extensions, new T[]{}, declaration);
         }
     }
@@ -96,16 +96,16 @@ public class Definition {
     /**
      * Declaration
      */
-    public abstract class D {
+    public abstract class TDeclaration {
         //either default methods (interface) or concrete methods (class)
-        public M[] ms;
+        public Method[] methods;
 
-        public D(M[] ms) {
-            this.ms = ms;
+        public TDeclaration(Method[] methods) {
+            this.methods = methods;
         }
 
-        public D() {
-            this.ms = new M[]{};
+        public TDeclaration() {
+            this.methods = new Method[]{};
         }
     }
 
@@ -113,24 +113,24 @@ public class Definition {
      * Class declaration
      * 𝐿 ::= class 𝐶 {𝑇 𝑓; 𝐾 𝑀}
      */
-    public class L extends D {
+    public class ClassDeclaration extends TDeclaration {
         public List<Field> fields;
-        public K k; // constructor
+        public Constructor constructor; // constructor
 
-        public L(List<Field> fields, K k, M[] ms) {
-            super(ms);
+        public ClassDeclaration(List<Field> fields, Constructor constructor, Method[] methods) {
+            super(methods);
             this.fields = fields;
-            this.k = k;
+            this.constructor = constructor;
         }
 
-        public L(List<Field> fields, K k) {
+        public ClassDeclaration(List<Field> fields, Constructor constructor) {
             this.fields = fields;
-            this.k = k;
+            this.constructor = constructor;
         }
 
-        public L(K k) {
+        public ClassDeclaration(Constructor constructor) {
             this.fields = new ArrayList<>(){};
-            this.k = k;
+            this.constructor = constructor;
         }
     }
 
@@ -139,20 +139,20 @@ public class Definition {
      * Interface declaration
      * 𝑃 ::= interface 𝐼 {𝑆; default 𝑀}
      */
-    public class P extends D {
-        public S[] s; //signatures
+    public class InterfaceDeclaration extends TDeclaration {
+        public Signature[] signature; //signatures
 
-        public P(M[] ms, S[] s) {
-            super(ms);
-            this.s = s;
+        public InterfaceDeclaration(Method[] methods, Signature[] signature) {
+            super(methods);
+            this.signature = signature;
         }
 
-        public P(S[] s) {
-            this.s = s;
+        public InterfaceDeclaration(Signature[] signature) {
+            this.signature = signature;
         }
 
-        public P() {
-            this.s = new S[]{};
+        public InterfaceDeclaration() {
+            this.signature = new Signature[]{};
         }
     }
 
@@ -160,20 +160,20 @@ public class Definition {
      * Constructor declaration
      * 𝐾 ::= 𝐶(𝑇 𝑓) {super(𝑓); this.𝑓 = 𝑓; }
      */
-    public class K {
+    public class Constructor {
         public String name; //class name
         public List<Field> params;
         public List<String> superParams;
         public List<InitiatedField> initiatedFields;
 
-        public K(String name, List<Field> params, List<String> superParams, List<InitiatedField> initiatedFields) {
+        public Constructor(String name, List<Field> params, List<String> superParams, List<InitiatedField> initiatedFields) {
             this.name = name;
             this.params = params;
             this.superParams = superParams;
             this.initiatedFields = initiatedFields;
         }
 
-        public K(String name) {
+        public Constructor(String name) {
             this.name = name;
             this.params = new ArrayList<Field>();
             this.superParams = new ArrayList<String>();
@@ -185,18 +185,18 @@ public class Definition {
      * Signature declaration (return type, method name and parameters)
      * 𝑆 ::= 𝑇 m(𝑇 𝑥)
      */
-    public class S {
+    public class Signature {
         public Type returnType;
         public String name;
         public List<Field> params;
 
-        public S(Type returnType, String name, List<Field> params) {
+        public Signature(Type returnType, String name, List<Field> params) {
             this.returnType = returnType;
             this.name = name;
             this.params = params;
         }
 
-        public S(Type returnType, String name) {
+        public Signature(Type returnType, String name) {
             this.returnType = returnType;
             this.name = name;
             this.params = new ArrayList<Field>();
@@ -208,11 +208,11 @@ public class Definition {
      * Method declaration
      * 𝑀 ::= 𝑆 { return 𝑒; }
      */
-    public class M {
-        public S signature;
+    public class Method {
+        public Signature signature;
         public Expression.Expr body;
 
-        public M(S signature, Expression.Expr body) {
+        public Method(Signature signature, Expression.Expr body) {
             this.signature = signature;
             this.body = body;
         }
