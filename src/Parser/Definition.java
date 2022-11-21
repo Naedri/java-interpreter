@@ -22,9 +22,11 @@ public class Definition {
     private Definition() {
     }
 
-   /* public Type constructorType(String name) {
+   /*
+   public Type constructorType(String name) {
         return new Type(name);
-    }*/
+    }
+    */
 
     /*********************Lambda syntactic constructors***************************************/
     /**
@@ -61,8 +63,6 @@ public class Definition {
      * 𝑇 ::= 𝐶
      */
     public class C extends T {
-        public ClassDeclaration declaration;
-
         /**
          * data Class = Class String String [String] [(Type,String)] Constr [Method]
          * Name of the class, name of the superclass, list of interfaces implemented, list of fields, constructor, list of methods
@@ -98,14 +98,15 @@ public class Definition {
      */
     public abstract class TDeclaration {
         //either default methods (interface) or concrete methods (class)
-        public Method[] methods;
+        public List<Method> methods;
 
-        public TDeclaration(Method[] methods) {
+        public TDeclaration(List<Method> methods) {
             this.methods = methods;
         }
 
         public TDeclaration() {
-            this.methods = new Method[]{};
+            this.methods = new ArrayList<Method>() {
+            };
         }
     }
 
@@ -117,7 +118,7 @@ public class Definition {
         public List<Field> fields;
         public Constructor constructor; // constructor
 
-        public ClassDeclaration(List<Field> fields, Constructor constructor, Method[] methods) {
+        public ClassDeclaration(List<Field> fields, Constructor constructor, List<Method> methods) {
             super(methods);
             this.fields = fields;
             this.constructor = constructor;
@@ -129,7 +130,8 @@ public class Definition {
         }
 
         public ClassDeclaration(Constructor constructor) {
-            this.fields = new ArrayList<>(){};
+            this.fields = new ArrayList<>() {
+            };
             this.constructor = constructor;
         }
     }
@@ -140,19 +142,19 @@ public class Definition {
      * 𝑃 ::= interface 𝐼 {𝑆; default 𝑀}
      */
     public class InterfaceDeclaration extends TDeclaration {
-        public Signature[] signature; //signatures
+        public List<Signature> signatures;
 
-        public InterfaceDeclaration(Method[] methods, Signature[] signature) {
+        public InterfaceDeclaration(List<Method> methods, List<Signature> signatures) {
             super(methods);
-            this.signature = signature;
+            this.signatures = signatures;
         }
 
-        public InterfaceDeclaration(Signature[] signature) {
-            this.signature = signature;
+        public InterfaceDeclaration(List<Signature> signatures) {
+            this.signatures = signatures;
         }
 
         public InterfaceDeclaration() {
-            this.signature = new Signature[]{};
+            this.signatures = new ArrayList<Signature>();
         }
     }
 
@@ -162,14 +164,21 @@ public class Definition {
      */
     public class Constructor {
         public String name; //class name
-        public List<Field> params;
-        public List<String> superParams;
-        public List<InitiatedField> initiatedFields;
+        public List<Field> params; // in haskell =>  [(Type,String)]
+        public List<String> superParams; // in haskell => [String]
+        public List<InitiatedField> initiatedFields; // in haskell => [String, String]
 
         public Constructor(String name, List<Field> params, List<String> superParams, List<InitiatedField> initiatedFields) {
             this.name = name;
             this.params = params;
             this.superParams = superParams;
+            this.initiatedFields = initiatedFields;
+        }
+
+        public Constructor(String name, List<Field> params, List<InitiatedField> initiatedFields) {
+            this.name = name;
+            this.params = params;
+            this.superParams = new ArrayList<String>();
             this.initiatedFields = initiatedFields;
         }
 
@@ -200,7 +209,6 @@ public class Definition {
             this.returnType = returnType;
             this.name = name;
             this.params = new ArrayList<Field>();
-            ;
         }
     }
 
@@ -221,6 +229,7 @@ public class Definition {
     /**
      * To initiate field by constructor from one of its parameter
      * this.𝑓 = 𝑓;
+     * according the code : `[(String,String)]`
      */
     public class InitiatedField {
         public String fieldName;

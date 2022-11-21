@@ -24,17 +24,18 @@ public class FJInterpreter extends Object implements IInterpreter {
     @Override
     public Expression.Expr evalPrime(Definition.CT dictionnary, Expression.Expr expression) {
         //eval' ct (CreateObject c p) = -- RC-New-Arg
-        if(expression instanceof Expression.CreateObject) {
+        if (expression instanceof Expression.CreateObject) {
             ArrayList<Expression.Expr> p2 = new ArrayList<>();
 
 
             /*let p' = Data.List.map (\x -> case (eval' ct x) of Just x' -> x') p
             in Just (CreateObject c p')*/
-            for(Expression.Expr pElem : ((Expression.CreateObject) expression).params) {
+            for (Expression.Expr pElem : ((Expression.CreateObject) expression).params) {
                 //eval' ct x
-                if(evalPrime(dictionnary, pElem) != null) { //TODO vérifier null ou liste vide ou autre
-                   p2.add(evalPrime(dictionnary, pElem)) ;
-                };
+                if (evalPrime(dictionnary, pElem) != null) { //TODO vérifier null ou liste vide ou autre
+                    p2.add(evalPrime(dictionnary, pElem));
+                }
+                ;
             }
 
             ((Expression.CreateObject) expression).params = p2;
@@ -43,24 +44,24 @@ public class FJInterpreter extends Object implements IInterpreter {
 
         //eval' ct (FieldAccess e f)
         //return the param searched in FieldAccess in the dictionnary
-        if(expression instanceof Expression.FieldAccess) {
+        if (expression instanceof Expression.FieldAccess) {
             Expression.FieldAccess fieldAccess = (Expression.FieldAccess) expression;
 
             //if (isValue ct e) then -- R-Field
-            if(FJUtils.isValue(dictionnary, fieldAccess.ownerCLass)) {
+            if (FJUtils.isValue(dictionnary, fieldAccess.ownerCLass)) {
                 //case e of      (CreateObject c p) ->
-                if(fieldAccess.ownerCLass instanceof Expression.CreateObject) {
+                if (fieldAccess.ownerCLass instanceof Expression.CreateObject) {
                     Expression.CreateObject e = (Expression.CreateObject) fieldAccess.ownerCLass;
 
                     //case (fields ct c) of             Just flds ->
                     ArrayList<Definition.Field> flds = FJUtils.fields(dictionnary, e.name);
-                    if(flds.size() != 0) {
+                    if (flds.size() != 0) {
                         //case (Data.List.findIndex (\(tp,nm) -> f == nm) flds) of
                         int idx = 0;
                         boolean found = false;
 
-                        for(Definition.Field fieldToCompare : flds) {
-                            if(((Expression.FieldAccess) expression).name.contentEquals(fieldToCompare.nameField)){
+                        for (Definition.Field fieldToCompare : flds) {
+                            if (((Expression.FieldAccess) expression).name.contentEquals(fieldToCompare.nameField)) {
                                 found = true;
                                 break;
                             } else {
@@ -69,7 +70,7 @@ public class FJInterpreter extends Object implements IInterpreter {
                         }
 
                         //Just idx -> Just (p !! idx)
-                        if(found) {
+                        if (found) {
                             return e.params.get(idx);
                         }
                     } else {
@@ -83,7 +84,7 @@ public class FJInterpreter extends Object implements IInterpreter {
                 //case (eval' ct e) of
                 //      Just e' -> Just (FieldAccess e' f)
                 //      _ -> Nothing
-                if(evalPrime(dictionnary, ((Expression.FieldAccess) expression).ownerCLass) != null) {
+                if (evalPrime(dictionnary, ((Expression.FieldAccess) expression).ownerCLass) != null) {
                     fieldAccess.ownerCLass = evalPrime(dictionnary, ((Expression.FieldAccess) expression).ownerCLass);
                     return fieldAccess;
                 } else {

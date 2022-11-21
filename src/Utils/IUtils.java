@@ -1,11 +1,5 @@
 package Utils;
 
-import Parser.Definition;
-import Parser.Expression;
-
-import java.util.List;
-import java.util.Optional;
-
 public interface IUtils {
     /*public Boolean subtyping(Definition.CT dictionnary, String a, String b);
     public List<Definition.Field> fields(Definition.CT dictionnary, String nameT1);*/
