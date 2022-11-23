@@ -41,7 +41,7 @@ public class FJUtils implements IUtils {
 
             if (dictionnary.containsKey(castNameTypeT1)) {
                 //Is t1 a class or an Interface ?
-                if (dictionnary.get(castNameTypeT1).EType == Definition.EType.CLASS) { //TODO définir condition
+                if (dictionnary.get(castNameTypeT1).eType == Definition.EType.CLASS) { //TODO définir condition
                     //t1 is a class
                     Definition.C classT1 = (Definition.C) dictionnary.get(castNameTypeT1);
                     Definition.T superclassT1 = classT1.extensions[0];
@@ -58,7 +58,7 @@ public class FJUtils implements IUtils {
 
                         return (subtyping(dictionnary, superclassT1.name, nameT2) || Arrays.stream(classT1.implementations).anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
                     }
-                } else if (dictionnary.get(castNameTypeT1).EType == Definition.EType.INTERFACE) { //TODO définir condition
+                } else if (dictionnary.get(castNameTypeT1).eType == Definition.EType.INTERFACE) { //TODO définir condition
                     //t1 is an Interface
                     Definition.I interfaceT1 = (Definition.I) dictionnary.get(castNameTypeT1);
                     //Interface _ il _ _
@@ -85,7 +85,7 @@ public class FJUtils implements IUtils {
         Definition.Type castNameTypeT1 = Definition.getInstance().new Type(nameT1);
 
         //case (Data.Map.lookup c ct) of Just (TClass (Class _ c'' _ attrs _ _)) ->
-        if (dictionnary.containsKey(castNameTypeT1) && dictionnary.get(castNameTypeT1).EType == Definition.EType.CLASS) {
+        if (dictionnary.containsKey(castNameTypeT1) && dictionnary.get(castNameTypeT1).eType == Definition.EType.CLASS) {
             Definition.C classT1 = (Definition.C) dictionnary.get(castNameTypeT1);
             Definition.T superclassT1 = classT1.extensions[0];
 
@@ -139,7 +139,7 @@ public class FJUtils implements IUtils {
     }
 
     /*@Override
-    public Expression.Expr lambdaMark(Expression.Expr exp, Definition.EType a) {
+    public Expression.Expr lambdaMark(Expression.Expr exp, EType a) {
         return null;
     }
 

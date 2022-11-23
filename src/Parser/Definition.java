@@ -34,28 +34,28 @@ public class Definition {
      * 𝑇 ::= 𝐶 | 𝐼
      */
     public abstract class T {
-        public EType EType; //TODO: evaluate if we want to keep it
+        public final EType eType; //TODO: evaluate if we want to keep it
         public String name;
         public T[] extensions;
         public T[] implementations; //TODO I[] instead of T[] ?     //TODO List instead [] to use contains ?
         public TDeclaration tDeclaration;
 
-        public T(EType EType, String name, T[] extensions, T[] implementations, TDeclaration tDeclaration) {
-            this.EType = EType;
+        public T(EType eType, String name, T[] extensions, T[] implementations, TDeclaration tDeclaration) {
+            this.eType = eType;
             this.name = name;
             this.extensions = extensions;
             this.implementations = implementations;
             this.tDeclaration = tDeclaration;
         }
 
-        public T(EType EType, String name, T[] extensions, TDeclaration tDeclaration) {
-            this.EType = EType;
+        public T(EType eType, String name, T[] extensions, TDeclaration tDeclaration) {
+            this.eType = eType;
             this.name = name;
             this.extensions = extensions;
             this.implementations = new I[]{};
             this.tDeclaration = tDeclaration;
-
         }
+
     }
 
     /**
@@ -259,11 +259,15 @@ public class Definition {
     /*********************Lambda nominal typing***************************************/
     /**
      * Type as an enum
-     * TODO: evaluate if we want to keep it
      */
     public enum EType {
-        CLASS, // Definition.C,
-        INTERFACE // Definition.I
+        CLASS("Class"), // Definition.C,
+        INTERFACE("Interface"); // Definition.I
+        private final String type;
+        // private enum constructor
+        private EType(String type) {
+            this.type= type;
+        }
     }
 
     /**
@@ -276,7 +280,6 @@ public class Definition {
         public Type(String typeName) {
             this.name = typeName;
         }
-
 
         public boolean equals(Type typeToCompare) {
             return name.contentEquals(typeToCompare.name);
