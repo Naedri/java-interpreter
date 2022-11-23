@@ -35,7 +35,7 @@ public class Definition {
         private final String type;
 
         // private enum constructor
-        private EType(String type) {
+        EType(String type) {
             this.type = type;
         }
     }
@@ -57,6 +57,73 @@ public class Definition {
     //TODO we should have a Singleton for this (only one dictionnary for one app)
     public static class CT extends HashMap<Type, T> {
         public CT() {
+        }
+    }
+
+    /*********************String name wrappers***************************************/
+
+    public static class FieldComparator implements Comparator<Field> {
+        @Override
+        public int compare(Field o1, Field o2) {
+            return o1.compare(o1, o2);
+        }
+    }
+
+    public static class InitiatedFieldComparator implements Comparator<InitiatedField> {
+        @Override
+        public int compare(InitiatedField o1, InitiatedField o2) {
+            return o1.compare(o1, o2);
+        }
+    }
+
+    public static class SignatureComparator implements Comparator<Signature> {
+        @Override
+        public int compare(Signature o1, Signature o2) {
+            return o1.compare(o1, o2);
+        }
+    }
+
+    public static class MethodComparator implements Comparator<Method> {
+        @Override
+        public int compare(Method o1, Method o2) {
+            return o1.compare(o1, o2);
+        }
+    }
+
+    public static class TComparator implements Comparator<T> {
+        @Override
+        public int compare(T o1, T o2) {
+            return o1.compare(o1, o2);
+        }
+    }
+
+    /*********************Lambda Auxilliary definitions***************************************/
+
+    /**
+     * Type as a String
+     * FJ + Lambda nominal typing
+     */
+    public class Type implements Comparator<Type> {
+        public String name;
+
+        public Type(String typeName) {
+            this.name = typeName;
+        }
+
+        @Override
+        public int compare(Type o1, Type o2) {
+            return o1.name.compareTo(o2.name);
+        }
+    }
+
+    /**
+     * Wrapper for variable names
+     */
+    public class Variable {
+        public String name;
+
+        public Variable(String variableName) {
+            this.name = variableName;
         }
     }
 
@@ -86,7 +153,7 @@ public class Definition {
             this.eType = eType;
             this.name = name;
             this.extensions = extensions;
-            this.implementations = new TreeSet<T>();
+            this.implementations = new TreeSet<T>(new TComparator());
             this.tDeclaration = tDeclaration;
         }
 
@@ -94,18 +161,16 @@ public class Definition {
         public T(EType eType, String name, T extension, TDeclaration tDeclaration) {
             this.eType = eType;
             this.name = name;
-            //this.extensions = new TreeSet<T>((Comparator<? super T>) extension);
-            this.extensions = new TreeSet<T>();
+            this.extensions = new TreeSet<T>(new TComparator());
             this.extensions.add(extension);
-            this.implementations = new TreeSet<T>();
+            this.implementations = new TreeSet<T>(new TComparator());
             this.tDeclaration = tDeclaration;
         }
 
         public T(EType eType, String name, T extension, TreeSet<T> implementations, ClassDeclaration tDeclaration) {
             this.eType = eType;
             this.name = name;
-            //this.extensions = new TreeSet<T>((Comparator<? super T>) extension);
-            this.extensions = new TreeSet<T>();
+            this.extensions = new TreeSet<T>(new TComparator());
             this.extensions.add(extension);
             this.implementations = implementations;
             this.tDeclaration = tDeclaration;
@@ -113,6 +178,7 @@ public class Definition {
 
         @Override
         public int compare(T o1, T o2) {
+            //TODO improve
             return o1.name.compareTo(o2.name);
         }
     }
@@ -128,16 +194,16 @@ public class Definition {
          * TODO params ?
          */
         public C(String name, C extension, TreeSet<I> implementations, ClassDeclaration declaration) {
-            super(EType.CLASS, name, (T) extension, I.fromIToT(implementations), declaration);
+            super(EType.CLASS, name, extension, I.fromIToT(implementations), declaration);
         }
 
         // we still have to ask for the declaration in order to retrieve the constructor even if there is no field
         public C(String name, ClassDeclaration declaration) {
-            super(EType.CLASS, name, new C("Object", new ClassDeclaration(new Constructor("ObjectConstructor"))), declaration);
+            super(EType.CLASS, name, new C("Object", new ClassDeclaration(new Constructor("Object"))), declaration);
         }
 
         public static TreeSet<T> fromCToT(TreeSet<C> set) {
-            TreeSet<T> newSet = new TreeSet<T>();
+            TreeSet<T> newSet = new TreeSet<T>(new TComparator());
             Iterator<T> iterator = newSet.iterator();
             while (iterator.hasNext()) {
                 T element = iterator.next();
@@ -154,17 +220,17 @@ public class Definition {
      * 𝑇 ::= 𝐼
      * 𝑃 ::= interface 𝐼 extends 𝐼 {𝑆; default 𝑀}
      */
-    public class I extends T {
+    public class I extends T implements Comparator<T> {
         /**
          * data Interface = Interface String [String] [Sign] [Method]
          * Name of the interface, list of superinterfaces, function signatures, Default method
          */
         public I(String name, TreeSet<I> extensions, InterfaceDeclaration declaration) {
-            super(EType.INTERFACE, name, I.fromIToT(extensions), new TreeSet<>(), declaration);
+            super(EType.INTERFACE, name, I.fromIToT(extensions), new TreeSet<>(new TComparator()), declaration);
         }
 
         public static TreeSet<T> fromIToT(TreeSet<I> set) {
-            TreeSet<T> newSet = new TreeSet<T>();
+            TreeSet<T> newSet = new TreeSet<T>(new TComparator());
             Iterator<T> iterator = newSet.iterator();
             while (iterator.hasNext()) {
                 T element = iterator.next();
@@ -187,7 +253,7 @@ public class Definition {
         }
 
         public TDeclaration() {
-            this.methods = new TreeSet<Method>() {
+            this.methods = new TreeSet<Method>(new MethodComparator()) {
             };
         }
     }
@@ -212,7 +278,7 @@ public class Definition {
         }
 
         public ClassDeclaration(Constructor constructor) {
-            this.fields = new TreeSet<>();
+            this.fields = new TreeSet<Field>(new FieldComparator());
             this.constructor = constructor;
         }
     }
@@ -234,9 +300,12 @@ public class Definition {
         }
 
         public InterfaceDeclaration() {
-            this.signatures = new TreeSet<Signature>();
+            this.signatures = new TreeSet<Signature>(new SignatureComparator());
         }
     }
+
+
+    /*********************Lambda nominal typing***************************************/
 
     /**
      * Constructor declaration
@@ -270,9 +339,9 @@ public class Definition {
 
         public Constructor(String name) {
             this.name = name;
-            this.args = new TreeSet<Field>();
+            this.args = new TreeSet<Field>(new FieldComparator());
             this.superArgs = new TreeSet<String>();
-            this.initiatedFields = new TreeSet<InitiatedField>();
+            this.initiatedFields = new TreeSet<InitiatedField>(new InitiatedFieldComparator());
         }
     }
 
@@ -280,7 +349,7 @@ public class Definition {
      * Signature declaration (return type, method name and parameters)
      * 𝑆 ::= 𝑇 m(𝑇 𝑥)
      */
-    public class Signature {
+    public class Signature implements Comparator<Signature> {
         public Type returnType;
         public String name;
         public TreeSet<Field> params;
@@ -294,7 +363,13 @@ public class Definition {
         public Signature(Type returnType, String name) {
             this.returnType = returnType;
             this.name = name;
-            this.params = new TreeSet<Field>();
+            this.params = new TreeSet<Field>(new FieldComparator());
+        }
+
+        @Override
+        public int compare(Signature o1, Signature o2) {
+            //TODO improve by going through all parameters
+            return o1.name.compareTo(o2.name);
         }
     }
 
@@ -302,13 +377,20 @@ public class Definition {
      * Method declaration
      * 𝑀 ::= 𝑆 { return 𝑒; }
      */
-    public class Method {
+    public class Method implements Comparator<Method> {
         public Signature signature;
         public Expression.Expr body;
 
         public Method(Signature signature, Expression.Expr body) {
             this.signature = signature;
             this.body = body;
+        }
+
+        @Override
+        public int compare(Method o1, Method o2) {
+            SignatureComparator sc = new SignatureComparator();
+            //TODO improve by going into body
+            return sc.compare(o1.signature, o2.signature);
         }
     }
 
@@ -317,7 +399,7 @@ public class Definition {
      * this.𝑓 = 𝑓;
      * according the code : `[(String,String)]`
      */
-    public class InitiatedField {
+    public class InitiatedField implements Comparator<InitiatedField> {
         public String fieldName; //attribute we initiate value
         public String paramName; //name of the parameter given to the constructeur as an argument
 
@@ -325,12 +407,7 @@ public class Definition {
             this.fieldName = fieldName;
             this.paramName = paramName;
         }
-    }
 
-
-    /*********************Lambda nominal typing***************************************/
-
-    public class InitiatedFieldComparator implements Comparator<InitiatedField> {
         @Override
         public int compare(InitiatedField o1, InitiatedField o2) {
             return o1.fieldName.compareTo(o2.fieldName) == 0 ?
@@ -343,7 +420,7 @@ public class Definition {
      * according the article : "couple declaration composed of class or interface name and their associated declaration"
      * according the code : `[(Type,String)]`
      */
-    public class Field {
+    public class Field implements Comparator<Field> {
         public Type type;
         public String nameField;
 
@@ -351,44 +428,11 @@ public class Definition {
             this.type = type;
             this.nameField = nameField;
         }
-    }
 
-    /*********************String name wrappers***************************************/
-
-    public class FieldComparator implements Comparator<Field> {
         @Override
         public int compare(Field o1, Field o2) {
-            return o1.nameField.compareTo(o2.nameField);
-        }
-    }
-
-
-    /*********************Lambda Auxilliary definitions***************************************/
-
-    /**
-     * Type as a String
-     * FJ + Lambda nominal typing
-     */
-    public class Type {
-        public String name;
-
-        public Type(String typeName) {
-            this.name = typeName;
-        }
-
-        public boolean equals(Type typeToCompare) {
-            return name.contentEquals(typeToCompare.name);
-        }
-    }
-
-    /**
-     * Wrapper for variable names
-     */
-    public class Variable {
-        public String name;
-
-        public Variable(String variableName) {
-            this.name = variableName;
+            return o1.nameField.compareTo(o2.nameField) == 0 ?
+                    o1.type.compare(o1.type, o2.type) : o1.nameField.compareTo(o2.nameField);
         }
     }
 }

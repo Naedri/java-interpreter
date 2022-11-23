@@ -81,7 +81,7 @@ public class FJUtils implements IUtils {
 
     //TODO return null ou liste vide ? --> return list pour utiliser la récursivité et compléter la liste suppérieure
     public static TreeSet<Definition.Field> fields(Definition.CT dictionnary, String nameT1) {
-        TreeSet<Definition.Field> listFields = new TreeSet<>();
+        TreeSet<Definition.Field> listFields = new TreeSet<>(new Definition.FieldComparator());
 
         if (nameT1.contentEquals("Object")) return listFields;
 
