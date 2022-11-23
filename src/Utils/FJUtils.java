@@ -3,8 +3,7 @@ package Utils;
 import Parser.Definition;
 import Parser.Expression;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.TreeSet;
 
 public class FJUtils implements IUtils {
     //public static class subtyping(Definition.CT table, Class a, Class b){ }
@@ -44,19 +43,22 @@ public class FJUtils implements IUtils {
                 if (dictionnary.get(castNameTypeT1).eType == Definition.EType.CLASS) { //TODO définir condition
                     //t1 is a class
                     Definition.C classT1 = (Definition.C) dictionnary.get(castNameTypeT1);
-                    Definition.T superclassT1 = classT1.extensions[0];
+                    Definition.T superclassT1 = classT1.extensions.first();
+                    //Definition.T superclassT1 = classT1.extensions[0];
                     //Class _ t'' il _ _ _
                     //need to get : Class _ (name of the superclass) (list of interfaces implemented) _ _ _
 
                     //if (t' == t'' || Data.List.elem t' il) then
                     //"if (t2) equals to (superclass of t1) OR if (t2) (is one of the interfaces implemented by t1) --> 2nd condition is possible because we don't know if t2 CLASS or INTERFACE
-                    if (castNameTypeT2.equals(superclassT1.name) || Arrays.stream(classT1.implementations).toList().contains(castNameTypeT2)) {
+                    //if (castNameTypeT2.equals(superclassT1.name) || Arrays.stream(classT1.implementations).toList().contains(castNameTypeT2)) {
+                    if (castNameTypeT2.equals(superclassT1.name) || classT1.implementations.contains(castNameTypeT2)) {
                         return true;
                     } else {
                         //subtyping ct t'' t' || Data.List.any (\t'' -> subtyping ct t'' t') il
                         //"if (superclass of t1) is subtype of t2 OR "is there at least one of the interfaces implemented by t1 that is a subclass of t2"
 
-                        return (subtyping(dictionnary, superclassT1.name, nameT2) || Arrays.stream(classT1.implementations).anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
+                        //return (subtyping(dictionnary, superclassT1.name, nameT2) || Arrays.stream(classT1.implementations).anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
+                        return (subtyping(dictionnary, superclassT1.name, nameT2) || classT1.implementations.stream().anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
                     }
                 } else if (dictionnary.get(castNameTypeT1).eType == Definition.EType.INTERFACE) { //TODO définir condition
                     //t1 is an Interface
@@ -66,7 +68,8 @@ public class FJUtils implements IUtils {
 
                     //Data.List.elem t' il || Data.List.any (\t'' -> subtyping ct t'' t') il
                     //"if (t2) (is one of the interfaces implemented by t1) OR "is there at least one of the interfaces implemented by t1 that is a subclass of t2"
-                    return (Arrays.stream(interfaceT1.implementations).toList().contains(castNameTypeT2) || Arrays.stream(interfaceT1.implementations).anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
+                    //return (Arrays.stream(interfaceT1.implementations).toList().contains(castNameTypeT2) || Arrays.stream(interfaceT1.implementations).anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
+                    return (interfaceT1.implementations.contains(castNameTypeT2) || interfaceT1.implementations.stream().anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
                 }
             }
 
@@ -77,8 +80,8 @@ public class FJUtils implements IUtils {
     }
 
     //TODO return null ou liste vide ? --> return list pour utiliser la récursivité et compléter la liste suppérieure
-    public static ArrayList<Definition.Field> fields(Definition.CT dictionnary, String nameT1) {
-        ArrayList<Definition.Field> listFields = new ArrayList<>();
+    public static TreeSet<Definition.Field> fields(Definition.CT dictionnary, String nameT1) {
+        TreeSet<Definition.Field> listFields = new TreeSet<>();
 
         if (nameT1.contentEquals("Object")) return listFields;
 
@@ -87,7 +90,8 @@ public class FJUtils implements IUtils {
         //case (Data.Map.lookup c ct) of Just (TClass (Class _ c'' _ attrs _ _)) ->
         if (dictionnary.containsKey(castNameTypeT1) && dictionnary.get(castNameTypeT1).eType == Definition.EType.CLASS) {
             Definition.C classT1 = (Definition.C) dictionnary.get(castNameTypeT1);
-            Definition.T superclassT1 = classT1.extensions[0];
+            //Definition.T superclassT1 = classT1.extensions[0];
+            Definition.T superclassT1 = classT1.extensions.first();
 
             //case (fields ct c'') of    Just base -> Just (base ++ attrs)
             //We take the fiedls of the superclass T and we add the fields of the class

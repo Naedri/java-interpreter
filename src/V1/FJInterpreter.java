@@ -6,6 +6,7 @@ import Utils.FJUtils;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.TreeSet;
 
 public class FJInterpreter extends Object implements IInterpreter {
     //TODO conversion de eval par des surcharges
@@ -54,7 +55,7 @@ public class FJInterpreter extends Object implements IInterpreter {
                     Expression.CreateObject e = (Expression.CreateObject) fieldAccess.ownerCLass;
 
                     //case (fields ct c) of             Just flds ->
-                    ArrayList<Definition.Field> flds = FJUtils.fields(dictionnary, e.name);
+                    TreeSet<Definition.Field> flds = FJUtils.fields(dictionnary, e.name);
                     if (flds.size() != 0) {
                         //case (Data.List.findIndex (\(tp,nm) -> f == nm) flds) of
                         int idx = 0;

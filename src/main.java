@@ -1,20 +1,21 @@
 import Parser.Definition;
 import Parser.Expression;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.TreeSet;
 
 public class main {
 
     public static void TestCounter(Definition defP, Expression expP) {
         Definition.Field param = defP.new Field(defP.new Type("int"), "count");
-        List<Definition.Field> params = Arrays.asList(param);
+        TreeSet<Definition.Field> params = new TreeSet<Definition.Field>(defP.new FieldComparator());
+        params.add(param);
         Definition.InitiatedField initField = defP.new InitiatedField("count", "count");
-        List<Definition.InitiatedField> initFields = Arrays.asList(initField);
-        Definition.Constructor constructor = defP.new Constructor("kCounter", params, initFields);
-        Definition.C objetCounter = defP.new C("Counter", defP.new ClassDeclaration(Arrays.asList(param), constructor));
-
+        TreeSet<Definition.InitiatedField> initFields = new TreeSet<Definition.InitiatedField>(defP.new InitiatedFieldComparator()); //Arrays.asList(initField);
+        initFields.add(initField);
+        Definition.Constructor constructor = defP.new Constructor("Counter", params, initFields);//in Java name of the constructor should be the same than the class
+        Definition.ClassDeclaration declaration = defP.new ClassDeclaration(params, constructor);
+        Definition.C objetCounter = defP.new C("Counter", declaration);
         System.out.println(objetCounter);
     }
 
@@ -54,17 +55,25 @@ public class main {
 
         Definition.Field param1 = defP.new Field(defP.new Type("Object"), "fst");
         Definition.Field param2 = defP.new Field(defP.new Type("Object"), "snd");
-        List<Definition.Field> params = Arrays.asList(param1, param2);
+        TreeSet<Definition.Field> params = new TreeSet<>(); //Arrays.asList(param1, param2);
+        params.add(param1);
+        params.add(param2);
         Definition.InitiatedField initField1 = defP.new InitiatedField("fst", "fst");
         Definition.InitiatedField initField2 = defP.new InitiatedField("snd", "snd");
-        List<Definition.InitiatedField> initFields = Arrays.asList(initField1, initField2);
+        TreeSet<Definition.InitiatedField> initFields = new TreeSet<>(); //Arrays.asList(initField1, initField2);
+        initFields.add(initField1);
+        initFields.add(initField2);
         Definition.Constructor constructor = defP.new Constructor("kPair", params, initFields);
 
         Expression.Expr body = expP.new CreateObject("Pair", Arrays.asList(expP.new Var("newfst"), expP.new FieldAccess(expP.new Var("this"), "snd")));
 
-        Definition.Method setfst = defP.new Method(defP.new Signature(defP.new Type("Pair"), "setfst", Arrays.asList(defP.new Field(defP.new Type("Object"), "newfst"))), body);
-        List<Definition.Method> methods = Arrays.asList(setfst);
-        Definition.C objectPair = defP.new C("Pair", defP.new ClassDeclaration(new ArrayList<Definition.Field>() {
+        //Definition.Method setfst = defP.new Method(defP.new Signature(defP.new Type("Pair"), "setfst", Arrays.asList(defP.new Field(defP.new Type("Object"), "newfst"))), body);
+        TreeSet<Definition.Field> treeSetSetFST = new TreeSet<Definition.Field>();
+        treeSetSetFST.add(defP.new Field(defP.new Type("Object"), "newfst"));
+        Definition.Method setfst = defP.new Method(defP.new Signature(defP.new Type("Pair"), "setfst", treeSetSetFST), body);
+        TreeSet<Definition.Method> methods = new TreeSet<>();
+        methods.add(setfst);
+        Definition.C objectPair = defP.new C("Pair", defP.new ClassDeclaration(new TreeSet<Definition.Field>() {
         }, defP.new Constructor("kB"), methods));
 
         System.out.println(objectPair);
