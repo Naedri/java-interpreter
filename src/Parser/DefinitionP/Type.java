@@ -7,14 +7,14 @@ import java.util.Comparator;
  * FJ + Lambda nominal typing
  */
 public class Type implements Comparator<Type> {
-    public String name;
+    public String typeName;
 
     public Type(String typeName) {
-        this.name = typeName;
+        this.typeName = typeName;
     }
 
     @Override
     public int compare(Type o1, Type o2) {
-        return o1.name.compareTo(o2.name);
+        return o1.typeName.compareTo(o2.typeName);
     }
 }
