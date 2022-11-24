@@ -226,44 +226,49 @@ public class FJInterpreter implements IInterpreter {
         } else {
             return null;
         }
-        
+
         //eval' _ _ = Nothing
         //code unreachable
         //return null;
     }
 
+    /**
+     * -- Function: subst
+     * -- Objective: Replace actual parameters in method body expression.
+     * -- Params: List of formal parameters names, List of actual parameters,
+     * -- Method body expression.
+     * -- Returns: A new changed expression.
+     * @param paramNames     List of formal parameters names
+     * @param params         List of actual parameters
+     * @param bodyExpression Method body expression
+     * @return
+     */
     //TODO
     @Override
     public Expr subst(TreeSet<String> paramNames, TreeSet<Expr> params, Expr bodyExpression) {
+        /*if(bodyExpression instanceof Var var) {
+
+        }*/
+
         return null;
     }
 
-    //TODO doit tester R-Field et RC-Field
-    /*
-    public static Expr eval(Map<String, Expr> classTable, Expr.FieldAccess expression) {
-        return null;
-    }*/
-
-   /* public static Expression eval(Map<String, Expression> classTable, MethodInvk expression) {
-
-        return null;
-    }*/
-
-    //eval' ct cc@(Cast t e)
-    /*public static Expression eval(Map classTable, CreateObject expression) {
-
-        return null;
-    }*/
-
-    //eval' ct cl@(Closure _ _) = Just cl
-    /*public static Expression eval(Map classTable, CreateObject expression) {
-
-        return null;
-    }*/
-
-    //eval' _ _ = Nothing
-    /*public static Expression eval(Map classTable, CreateObject expression) {
-
-        return null;
-    }*/
+    /**
+     * -- Function: eval
+     * -- Objective: Evaluate an expression recursively.
+     * -- Params: Class table, Expression.
+     * -- Returns: A value after all the reduction steps.
+     */
+    public Expr eval(CT dictionnary, Expr expr) {
+        if(FJUtils.isValue(dictionnary, expr)) {
+            return expr;
+        } else {
+            //maybe e (eval ct) (eval' ct e)
+            if(eval(dictionnary, evalPrime(dictionnary, expr)) != null) {
+                return eval(dictionnary, evalPrime(dictionnary, expr));
+            } else {
+                return expr;
+            }
+        }
+    }
 }
