@@ -10,7 +10,6 @@ public class C extends T {
     /**
      * data Class = Class String String [String] [(Type,String)] Constr [Method]
      * Name of the class, name of the superclass, list of interfaces implemented, list of fields, constructor, list of methods
-     * TODO params ?
      */
     public C(String name, C extension, TreeSet<I> implementations, ClassDeclaration declaration) {
         super(EType.CLASS, name, extension, I.fromIToT(implementations), declaration);

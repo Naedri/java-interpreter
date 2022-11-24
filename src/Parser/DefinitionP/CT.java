@@ -4,7 +4,10 @@ import java.util.HashMap;
 
 /**
  * Class Table
- * Usin a singleton as we have to have one dictionary for one app
+ * A mapping from class or interface names to class or interface declarations
+ * Using a singleton as we have to have one dictionary for one app
+ * Type -> Type.name
+ * T -> T.declaration
  */
 public class CT extends HashMap<Type, T> {
     private static CT instance;
