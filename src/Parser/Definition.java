@@ -30,14 +30,11 @@ public class Definition {
      * Type as an enum
      */
     public enum EType {
-        CLASS("Class"), // Definition.C,
-        INTERFACE("Interface"); // Definition.I
-        private final String type;
+        CLASS(), // Definition.C,
+        INTERFACE(); // Definition.I
 
         // private enum constructor
-        EType(String type) {
-            this.type = type;
-        }
+        EType() {}
     }
 
     /**
@@ -54,7 +51,7 @@ public class Definition {
      * TODO how can we use Field class wrapper to type the hash map ?
      * TODO singleton ? if so need a factory
      */
-    //TODO we should have a Singleton for this (only one dictionnary for one app)
+    //TODO we should have a Singleton for this (only one dictionary for one app)
     public static class CT extends HashMap<Type, T> {
         public CT() {
         }
@@ -97,7 +94,7 @@ public class Definition {
         }
     }
 
-    /*********************Lambda Auxilliary definitions***************************************/
+    /*********************Lambda Auxiliary definitions***************************************/
 
     /**
      * Type as a String
@@ -147,30 +144,30 @@ public class Definition {
             this.tDeclaration = tDeclaration;
         }
 
-        //interfaces et classes sans implémentations avec plusieurs extensions
-        //si classe, extensions taille 1 élément => utiliser constructeur suivant
+        //interfaces and classes without implementations with several extensions
+        // if class, extensions size 1 element => use next constructor
         public T(EType eType, String name, TreeSet<T> extensions, TDeclaration tDeclaration) {
             this.eType = eType;
             this.name = name;
             this.extensions = extensions;
-            this.implementations = new TreeSet<T>(new TComparator());
+            this.implementations = new TreeSet<>(new TComparator());
             this.tDeclaration = tDeclaration;
         }
 
-        //interface ou une classe sans implémentations avec une seule extension
+        //interface or a class without implementations with a single extension
         public T(EType eType, String name, T extension, TDeclaration tDeclaration) {
             this.eType = eType;
             this.name = name;
-            this.extensions = new TreeSet<T>(new TComparator());
+            this.extensions = new TreeSet<>(new TComparator());
             this.extensions.add(extension);
-            this.implementations = new TreeSet<T>(new TComparator());
+            this.implementations = new TreeSet<>(new TComparator());
             this.tDeclaration = tDeclaration;
         }
 
         public T(EType eType, String name, T extension, TreeSet<T> implementations, ClassDeclaration tDeclaration) {
             this.eType = eType;
             this.name = name;
-            this.extensions = new TreeSet<T>(new TComparator());
+            this.extensions = new TreeSet<>(new TComparator());
             this.extensions.add(extension);
             this.implementations = implementations;
             this.tDeclaration = tDeclaration;
@@ -187,7 +184,7 @@ public class Definition {
      * Class type
      * 𝑇 ::= 𝐶
      */
-    public class C extends T implements Comparator<T> {
+    public class C extends T {
         /**
          * data Class = Class String String [String] [(Type,String)] Constr [Method]
          * Name of the class, name of the superclass, list of interfaces implemented, list of fields, constructor, list of methods
@@ -201,18 +198,6 @@ public class Definition {
         public C(String name, ClassDeclaration declaration) {
             super(EType.CLASS, name, new C("Object", new ClassDeclaration(new Constructor("Object"))), declaration);
         }
-
-        public static TreeSet<T> fromCToT(TreeSet<C> set) {
-            TreeSet<T> newSet = new TreeSet<T>(new TComparator());
-            Iterator<T> iterator = newSet.iterator();
-            while (iterator.hasNext()) {
-                T element = iterator.next();
-                System.out.print("iterator test " + element.toString());
-                newSet.add(element);
-            }
-            return newSet;
-        }
-
     }
 
     /**
@@ -220,7 +205,7 @@ public class Definition {
      * 𝑇 ::= 𝐼
      * 𝑃 ::= interface 𝐼 extends 𝐼 {𝑆; default 𝑀}
      */
-    public class I extends T implements Comparator<T> {
+    public class I extends T {
         /**
          * data Interface = Interface String [String] [Sign] [Method]
          * Name of the interface, list of superinterfaces, function signatures, Default method
@@ -230,13 +215,9 @@ public class Definition {
         }
 
         public static TreeSet<T> fromIToT(TreeSet<I> set) {
-            TreeSet<T> newSet = new TreeSet<T>(new TComparator());
-            Iterator<T> iterator = newSet.iterator();
-            while (iterator.hasNext()) {
-                T element = iterator.next();
-                System.out.print("iterator test " + element.toString());
-                newSet.add(element);
-            }
+            TreeSet<T> newSet = new TreeSet<>(new TComparator());
+            // for (I i : set) {newSet.add(i);}
+            newSet.addAll(set);
             return newSet;
         }
     }
@@ -253,8 +234,7 @@ public class Definition {
         }
 
         public TDeclaration() {
-            this.methods = new TreeSet<Method>(new MethodComparator()) {
-            };
+            this.methods = new TreeSet<>(new MethodComparator());
         }
     }
 
@@ -278,7 +258,7 @@ public class Definition {
         }
 
         public ClassDeclaration(Constructor constructor) {
-            this.fields = new TreeSet<Field>(new FieldComparator());
+            this.fields = new TreeSet<>(new FieldComparator());
             this.constructor = constructor;
         }
     }
@@ -312,8 +292,8 @@ public class Definition {
      * 𝐾 ::= 𝐶(𝑇 𝑓) {super(𝑓); this.𝑓 = 𝑓; }
      */
     public class Constructor {
-        public String name; //class name // should be the same than the class
-        public TreeSet<Field> args; // in haskell =>  [(Type,String)] //no duplicatas allowed, so Set
+        public String name; //class name // should be the same as the class
+        public TreeSet<Field> args; // in haskell =>  [(Type,String)] //no duplicates allowed, so Set
         public TreeSet<String> superArgs; // in haskell => [String]
         public TreeSet<InitiatedField> initiatedFields; // in haskell => [String, String]
 
@@ -321,7 +301,7 @@ public class Definition {
          * @param name            of the constructor of the class
          * @param args            of the constructor (name, superParams, initiatedFields)
          * @param superArgs       : args that are redirected by the super() (if the super is present)
-         * @param initiatedFields : couple of String to indicate which Field will be initiated by which params from the constructor
+         * @param initiatedFields : a couple of String to indicate which Field will be initiated by which params from the constructor
          */
         public Constructor(String name, TreeSet<Field> args, TreeSet<String> superArgs, TreeSet<InitiatedField> initiatedFields) {
             this.name = name;
@@ -401,7 +381,7 @@ public class Definition {
      */
     public class InitiatedField implements Comparator<InitiatedField> {
         public String fieldName; //attribute we initiate value
-        public String paramName; //name of the parameter given to the constructeur as an argument
+        public String paramName; //name of the parameter given to the constructor as an argument
 
         public InitiatedField(String fieldName, String paramName) {
             this.fieldName = fieldName;

@@ -8,6 +8,7 @@ public class main {
 
     public static void TestObject(Definition defP, Expression expP){
         Definition.ClassDeclaration classDeclaration = defP. new ClassDeclaration(defP. new Constructor("Object"));
+        System.out.println(classDeclaration);
         Definition.C baseObject = defP. new C("Object", classDeclaration);
         System.out.println(baseObject);
     }
