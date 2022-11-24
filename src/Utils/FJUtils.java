@@ -7,19 +7,17 @@ import Parser.ExpressionP.CreateObject;
 import Parser.ExpressionP.Expr;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.TreeSet;
 
 public class FJUtils implements IUtils {
-    //public static class subtyping(Definition.CT table, Class a, Class b){ }
-    //public static class fields(Definition.CT table, Class a, Class b){ }
-    /*public static class absmethods(Definition.CT table, Class a, Class b){ }
-    public static class methods(Definition.CT table, Class a, Class b){ }
-    public static class mtype(Definition.CT table, Class a, Class b){ }
-    public static class mbody(Definition.CT table, Class a, Class b){ }*/
-    //public static class isValue(Definition.CT table, Class a, Class b){ }
-    //public static class lambdaMark(Definition.CT table, Class a, Class b){ }
+    //public static class subtyping(CT table, Class a, Class b){ }
+    //public static class fields(CT table, Class a, Class b){ }
+    /*public static class absmethods(CT table, Class a, Class b){ }
+    public static class methods(CT table, Class a, Class b){ }
+    public static class mtype(CT table, Class a, Class b){ }
+    public static class mbody(CT table, Class a, Class b){ }*/
+    //public static class isValue(CT table, Class a, Class b){ }
+    //public static class lambdaMark(CT table, Class a, Class b){ }
 
     /**
      * -- Function: subtyping
@@ -50,7 +48,7 @@ public class FJUtils implements IUtils {
                     //t1 is a class
                     C classT1 = (C) dictionnary.get(castNameTypeT1);
                     T superclassT1 = classT1.extensions.first();
-                    //Definition.T superclassT1 = classT1.extensions[0];
+                    //T superclassT1 = classT1.extensions[0];
                     //Class _ t'' il _ _ _
                     //need to get : Class _ (name of the superclass) (list of interfaces implemented) _ _ _
 
@@ -96,7 +94,7 @@ public class FJUtils implements IUtils {
         //case (Data.Map.lookup c ct) of Just (TClass (Class _ c'' _ attrs _ _)) ->
         if (dictionnary.containsKey(castNameTypeT1) && dictionnary.get(castNameTypeT1).eType == EType.CLASS) {
             C classT1 = (C) dictionnary.get(castNameTypeT1);
-            //Definition.T superclassT1 = classT1.extensions[0];
+            //T superclassT1 = classT1.extensions[0];
             T superclassT1 = classT1.extensions.first();
 
             //case (fields ct c'') of    Just base -> Just (base ++ attrs)
@@ -108,40 +106,41 @@ public class FJUtils implements IUtils {
         return listFields;
     }
 
+
     /**
      * -- Function: methods
      * -- Objective: Search for a class on class table and returns its methods.
      * -- Params: Class table, Class name.
      * -- Returns: A monad Maybe containing the method list of Nothing.
      */
-    public static ArrayList<Definition.Method> methods(Definition.CT dictionnary, String className) {
-        ArrayList<Definition.Method> resultListMethod = new ArrayList<>();
+    public static ArrayList<Method> methods(CT dictionnary, String className) {
+        ArrayList<Method> resultListMethod = new ArrayList<>();
 
         //methods _ "Object" = Just []
-        if(className.contentEquals("Object")) return resultListMethod;
+        if (className.contentEquals("Object")) return resultListMethod;
 
         //case (Data.Map.lookup t ct) of
         //If t1 don't exist on the dictionnary, we can't compare
-        Definition.Type castClassNameType = Definition.getInstance().new Type(className);
+        Type castClassNameType = new Type(className);
 
         if (dictionnary.containsKey(castClassNameType)) {
-            if (dictionnary.get(castClassNameType).eType == Definition.EType.CLASS) { //TODO définir condition
+            if (dictionnary.get(castClassNameType).eType == EType.CLASS) { //TODO définir condition
                 //className is a class
-                Definition.C classT1 = (Definition.C) dictionnary.get(castClassNameType);
-                Definition.T superclassT1 = classT1.extensions[0];
-                //List<Definition.Method> methodsT1 = classT1.tDeclaration.methods;
+                C classT1 = (C) dictionnary.get(castClassNameType);
+                T superclassT1 = classT1.extensions.first();
+                //List<Method> methodsT1 = classT1.tDeclaration.methods;
                 //Class _ cb il _ _ meths
                 //-- on récupère la superclasse (cb), la liste des interfaces (il) et les méthodes concrètes (meths)
 
                 //case (methods ct cb) of     Just bms
-                ArrayList<Definition.Method> bms = methods(dictionnary, superclassT1.name);
-                if(bms != null) {
+                ArrayList<Method> bms = methods(dictionnary, superclassT1.name);
+                if (bms != null) {
                     // -- les méthodes concrètes de la superclasse (bms <=> base concrete methods)
                     // -- concaténation dans une seule map (bim <=> base interface methods) les defaults méthodes de l'ensemble des interfaces (il)
                     //let bim = Data.List.concatMap
-                    ArrayList<Definition.Method> bim = new ArrayList<>();
-                    for (Definition.T implementation : classT1.implementations) {
-                        if(methods(dictionnary, implementation.name) != null)
+                    ArrayList<Method> bim = new ArrayList<>();
+                    for (T implementation : classT1.implementations) {
+                        if (methods(dictionnary, implementation.name) != null)
                             bim.addAll(methods(dictionnary, implementation.name));
                     }
 
@@ -150,21 +149,21 @@ public class FJUtils implements IUtils {
                     //unionBy : directly add all 1rst arg content, next iterate on the 2nd arg and verify that IT DONT VALIDATE THE CONDITION (if at least one condition is ok, we don't add it)
                     //Set to secure no duplicata in the collection
                     //m' = unionBy (...) meths bms
-                    TreeSet<Definition.Method> mPrime = new TreeSet<>();
+                    TreeSet<Method> mPrime = new TreeSet<>();
                     mPrime.addAll(classT1.tDeclaration.methods);
                     boolean checkCondition = true;
 
-                    for (Definition.Method bm : bms) {
+                    for (Method bm : bms) {
                         /*if(!mPrime.contains(bm))
                             mPrime.add(bm);*/
-                        for(Definition.Method meth : classT1.tDeclaration.methods) {
-                            if(meth.signature.name.contentEquals(bm.signature.name)) {
+                        for (Method meth : classT1.tDeclaration.methods) {
+                            if (meth.signature.name.contentEquals(bm.signature.name)) {
                                 checkCondition = false;
                                 break;
                             }
                         }
 
-                        if(checkCondition) {
+                        if (checkCondition) {
                             mPrime.add(bm);
                         } else {
                             checkCondition = true;
@@ -174,19 +173,19 @@ public class FJUtils implements IUtils {
 
                     //-- left union des méthodes concrètes de la classe et la superclasse (m') avec les méthodes default des interfaces (bim)
                     //m'' = unionBy (...) m' bim
-                    TreeSet<Definition.Method> mSecond = new TreeSet<>();
+                    TreeSet<Method> mSecond = new TreeSet<>();
                     mSecond.addAll(mPrime);
                     checkCondition = true; //useless to add because it end in true in the previous for
 
-                    for (Definition.Method bm : bim) {
-                        for(Definition.Method meth : mPrime) {
-                            if(meth.signature.name.contentEquals(bm.signature.name)) {
+                    for (Method bm : bim) {
+                        for (Method meth : mPrime) {
+                            if (meth.signature.name.contentEquals(bm.signature.name)) {
                                 checkCondition = false;
                                 break;
                             }
                         }
 
-                        if(checkCondition) {
+                        if (checkCondition) {
                             mSecond.add(bm);
                         } else {
                             checkCondition = true;
@@ -197,21 +196,21 @@ public class FJUtils implements IUtils {
                 } else {
                     return null;
                 }
-            } else if (dictionnary.get(castClassNameType).eType == Definition.EType.INTERFACE) { //TODO définir condition
+            } else if (dictionnary.get(castClassNameType).eType == EType.INTERFACE) { //TODO définir condition
                 //Just (TInterface (Interface _ il _ defmeths))
 
                 //className is an interface
-                Definition.I interfaceT1 = (Definition.I) dictionnary.get(castClassNameType);
-                //List<Definition.Method> defmeths = classT1.tDeclaration.methods;
+                I interfaceT1 = (I) dictionnary.get(castClassNameType);
+                //List<Method> defmeths = classT1.tDeclaration.methods;
                 //Interface _ il _  defmeths
                 //-- on récupère la liste des interfaces (il) etendues par l'interface (t) et ses default methodes (defmeths) -- => ici (t) est une interface
 
 
                 //-- concaténation dans une seule map (bim <=> base interface methods) les defaults méthodes de l'ensemble des interfaces que l'interface (t) implémente (il)
                 //let bim = Data.List.concatMap
-                ArrayList<Definition.Method> bim = new ArrayList<>();
-                for (Definition.T implementation : interfaceT1.implementations) {
-                    if(methods(dictionnary, implementation.name) != null)
+                ArrayList<Method> bim = new ArrayList<>();
+                for (T implementation : interfaceT1.implementations) {
+                    if (methods(dictionnary, implementation.name) != null)
                         bim.addAll(methods(dictionnary, implementation.name));
                 }
 
@@ -220,19 +219,19 @@ public class FJUtils implements IUtils {
                 //unionBy : directly add all 1rst arg content, next iterate on the 2nd arg and verify that IT DONT VALIDATE THE CONDITION (if at least one condition is ok, we don't add it)
                 //Set to secure no duplicata in the collection
                 //m' = unionBy (...) defmeths bim
-                TreeSet<Definition.Method> mPrime = new TreeSet<>();
+                TreeSet<Method> mPrime = new TreeSet<>();
                 mPrime.addAll(interfaceT1.tDeclaration.methods);
                 boolean checkCondition = true;
 
-                for (Definition.Method bm : bim) {
-                    for(Definition.Method meth : interfaceT1.tDeclaration.methods) {
-                        if(meth.signature.name.contentEquals(bm.signature.name)) {
+                for (Method bm : bim) {
+                    for (Method meth : interfaceT1.tDeclaration.methods) {
+                        if (meth.signature.name.contentEquals(bm.signature.name)) {
                             checkCondition = false;
                             break;
                         }
                     }
 
-                    if(checkCondition) {
+                    if (checkCondition) {
                         mPrime.add(bm);
                     } else {
                         checkCondition = true;
@@ -246,7 +245,6 @@ public class FJUtils implements IUtils {
         return null;
     }
 
-
     /**
      * -- Function: mbody
      * -- Objective: Search for a class on class table, then looks up for a method
@@ -254,23 +252,24 @@ public class FJUtils implements IUtils {
      * -- Params: Class table, Method name, Class name.
      * -- Returns: A monad Maybe containing the method body or Nothing.
      * ---------------------------------------------------------------------------
+     *
      * @param dictionnary
      * @param methodName
      * @param className
      * @return
      */
-    public static Definition.Method mbody(Definition.CT dictionnary, String methodName, String className) {
-        if(className.contentEquals("Object")) return null;
+    public static Method mbody(CT dictionnary, String methodName, String className) {
+        if (className.contentEquals("Object")) return null;
 
         //TODO
-        ArrayList<Definition.Method> meths = methods(dictionnary, className);
+        ArrayList<Method> meths = methods(dictionnary, className);
         //case (methods ct t) of    Just meths
-        if(meths != null) {
-            Definition.Method methodInClass = null;
+        if (meths != null) {
+            Method methodInClass = null;
 
             //case (Data.List.find (\(Method (Sign _ m' _) _) -> m == m') meths) of     --find return the first element that match the predicate or nothing
-            for (Definition.Method meth : meths) {
-                if(meth.signature.name.contentEquals(methodName)) {
+            for (Method meth : meths) {
+                if (meth.signature.name.contentEquals(methodName)) {
                     methodInClass = meth;
                     break;
                 }
@@ -279,7 +278,7 @@ public class FJUtils implements IUtils {
             //Just (Method (Sign _ _ p) e) -> Just (snd (unzip p), e)
             //p Signature.params, e Method.body
             //snd(unzip p) will get Field.nameField
-            if(methodInClass != null) {
+            if (methodInClass != null) {
                 //TODO creer un type de reotur adequat
             }
 

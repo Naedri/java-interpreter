@@ -2,9 +2,7 @@ package V1;
 
 import Parser.DefinitionP.CT;
 import Parser.DefinitionP.Field;
-import Parser.ExpressionP.CreateObject;
-import Parser.ExpressionP.Expr;
-import Parser.ExpressionP.FieldAccess;
+import Parser.ExpressionP.*;
 import Utils.FJUtils;
 
 import java.util.ArrayList;
@@ -97,27 +95,25 @@ public class FJInterpreter implements IInterpreter {
 
         //TODO eval' ct (MethodInvk e m p) =
         //e = parent, m = name, p = params
-        if (expression instanceof Expression.MethodInvk) {
-            Expression.MethodInvk methodInvk = (Expression.MethodInvk) expression;
+        if (expression instanceof MethodInvk methodInvk) {
 
             //if (isValue ct e) then -- expression existe dans le dico
             if (FJUtils.isValue(dictionnary, methodInvk.parent)) {
                 //if (Data.List.all (isValue ct) p) then
                 boolean isAllInCT = true;
-                for (Expression.Expr expr : methodInvk.params) {
+                for (Expr expr : methodInvk.params) {
                     if (!FJUtils.isValue(dictionnary, expr)) {
                         isAllInCT = false;
                         break;
                     }
                 }
 
-                if(isAllInCT) {
+                if (isAllInCT) {
                     //case e of      (CreateObject c p) ->
-                    if(methodInvk.parent instanceof Expression.CreateObject) {
+                    if (methodInvk.parent instanceof CreateObject e) {
                         //-- R-Invk -- modif quand V2
-                        Expression.CreateObject e = (Expression.CreateObject) methodInvk.parent;
                         //TODO
-                    } else if(methodInvk.parent instanceof Expression.Cast) {
+                    } else if (methodInvk.parent instanceof Cast) {
                         //TODO
                     } else {
                         return null;
@@ -129,8 +125,6 @@ public class FJInterpreter implements IInterpreter {
                 //TODO -- RC-Invk-Recv
             }
         }
-
-
 
 
         //TODO eval' ct cc@(Cast t e) =
