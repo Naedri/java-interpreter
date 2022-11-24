@@ -25,6 +25,7 @@ public class FJInterpreter implements IInterpreter {
     //Expr pour surcharge ?
     //Retourne soit une valeur soit null
     //TODO conversion de la méthode
+    //TODO refactor de la méthode en séparant en sous fonction pour chaque type d'objet
     @Override
     public Expr evalPrime(CT dictionnary, Expr expression) {
         //eval' ct (CreateObject c p) = -- RC-New-Arg
@@ -95,6 +96,42 @@ public class FJInterpreter implements IInterpreter {
         }
 
         //TODO eval' ct (MethodInvk e m p) =
+        //e = parent, m = name, p = params
+        if (expression instanceof Expression.MethodInvk) {
+            Expression.MethodInvk methodInvk = (Expression.MethodInvk) expression;
+
+            //if (isValue ct e) then -- expression existe dans le dico
+            if (FJUtils.isValue(dictionnary, methodInvk.parent)) {
+                //if (Data.List.all (isValue ct) p) then
+                boolean isAllInCT = true;
+                for (Expression.Expr expr : methodInvk.params) {
+                    if (!FJUtils.isValue(dictionnary, expr)) {
+                        isAllInCT = false;
+                        break;
+                    }
+                }
+
+                if(isAllInCT) {
+                    //case e of      (CreateObject c p) ->
+                    if(methodInvk.parent instanceof Expression.CreateObject) {
+                        //-- R-Invk -- modif quand V2
+                        Expression.CreateObject e = (Expression.CreateObject) methodInvk.parent;
+                        //TODO
+                    } else if(methodInvk.parent instanceof Expression.Cast) {
+                        //TODO
+                    } else {
+                        return null;
+                    }
+                } else {
+                    //TODO -- RC-Invk-Arg
+                }
+            } else {
+                //TODO -- RC-Invk-Recv
+            }
+        }
+
+
+
 
         //TODO eval' ct cc@(Cast t e) =
 

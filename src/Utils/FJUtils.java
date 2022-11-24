@@ -6,6 +6,9 @@ import Parser.ExpressionP.Closure;
 import Parser.ExpressionP.CreateObject;
 import Parser.ExpressionP.Expr;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.TreeSet;
 
 public class FJUtils implements IUtils {
@@ -105,6 +108,185 @@ public class FJUtils implements IUtils {
         return listFields;
     }
 
+    /**
+     * -- Function: methods
+     * -- Objective: Search for a class on class table and returns its methods.
+     * -- Params: Class table, Class name.
+     * -- Returns: A monad Maybe containing the method list of Nothing.
+     */
+    public static ArrayList<Definition.Method> methods(Definition.CT dictionnary, String className) {
+        ArrayList<Definition.Method> resultListMethod = new ArrayList<>();
+
+        //methods _ "Object" = Just []
+        if(className.contentEquals("Object")) return resultListMethod;
+
+        //case (Data.Map.lookup t ct) of
+        //If t1 don't exist on the dictionnary, we can't compare
+        Definition.Type castClassNameType = Definition.getInstance().new Type(className);
+
+        if (dictionnary.containsKey(castClassNameType)) {
+            if (dictionnary.get(castClassNameType).eType == Definition.EType.CLASS) { //TODO définir condition
+                //className is a class
+                Definition.C classT1 = (Definition.C) dictionnary.get(castClassNameType);
+                Definition.T superclassT1 = classT1.extensions[0];
+                //List<Definition.Method> methodsT1 = classT1.tDeclaration.methods;
+                //Class _ cb il _ _ meths
+                //-- on récupère la superclasse (cb), la liste des interfaces (il) et les méthodes concrètes (meths)
+
+                //case (methods ct cb) of     Just bms
+                ArrayList<Definition.Method> bms = methods(dictionnary, superclassT1.name);
+                if(bms != null) {
+                    // -- les méthodes concrètes de la superclasse (bms <=> base concrete methods)
+                    // -- concaténation dans une seule map (bim <=> base interface methods) les defaults méthodes de l'ensemble des interfaces (il)
+                    //let bim = Data.List.concatMap
+                    ArrayList<Definition.Method> bim = new ArrayList<>();
+                    for (Definition.T implementation : classT1.implementations) {
+                        if(methods(dictionnary, implementation.name) != null)
+                            bim.addAll(methods(dictionnary, implementation.name));
+                    }
+
+
+                    //-- left union des méthodes concrètes de la classe (t) avec les méthodes de la superclasse (bms)
+                    //unionBy : directly add all 1rst arg content, next iterate on the 2nd arg and verify that IT DONT VALIDATE THE CONDITION (if at least one condition is ok, we don't add it)
+                    //Set to secure no duplicata in the collection
+                    //m' = unionBy (...) meths bms
+                    TreeSet<Definition.Method> mPrime = new TreeSet<>();
+                    mPrime.addAll(classT1.tDeclaration.methods);
+                    boolean checkCondition = true;
+
+                    for (Definition.Method bm : bms) {
+                        /*if(!mPrime.contains(bm))
+                            mPrime.add(bm);*/
+                        for(Definition.Method meth : classT1.tDeclaration.methods) {
+                            if(meth.signature.name.contentEquals(bm.signature.name)) {
+                                checkCondition = false;
+                                break;
+                            }
+                        }
+
+                        if(checkCondition) {
+                            mPrime.add(bm);
+                        } else {
+                            checkCondition = true;
+                        }
+                    }
+
+
+                    //-- left union des méthodes concrètes de la classe et la superclasse (m') avec les méthodes default des interfaces (bim)
+                    //m'' = unionBy (...) m' bim
+                    TreeSet<Definition.Method> mSecond = new TreeSet<>();
+                    mSecond.addAll(mPrime);
+                    checkCondition = true; //useless to add because it end in true in the previous for
+
+                    for (Definition.Method bm : bim) {
+                        for(Definition.Method meth : mPrime) {
+                            if(meth.signature.name.contentEquals(bm.signature.name)) {
+                                checkCondition = false;
+                                break;
+                            }
+                        }
+
+                        if(checkCondition) {
+                            mSecond.add(bm);
+                        } else {
+                            checkCondition = true;
+                        }
+                    }
+
+                    return new ArrayList<>(mSecond);
+                } else {
+                    return null;
+                }
+            } else if (dictionnary.get(castClassNameType).eType == Definition.EType.INTERFACE) { //TODO définir condition
+                //Just (TInterface (Interface _ il _ defmeths))
+
+                //className is an interface
+                Definition.I interfaceT1 = (Definition.I) dictionnary.get(castClassNameType);
+                //List<Definition.Method> defmeths = classT1.tDeclaration.methods;
+                //Interface _ il _  defmeths
+                //-- on récupère la liste des interfaces (il) etendues par l'interface (t) et ses default methodes (defmeths) -- => ici (t) est une interface
+
+
+                //-- concaténation dans une seule map (bim <=> base interface methods) les defaults méthodes de l'ensemble des interfaces que l'interface (t) implémente (il)
+                //let bim = Data.List.concatMap
+                ArrayList<Definition.Method> bim = new ArrayList<>();
+                for (Definition.T implementation : interfaceT1.implementations) {
+                    if(methods(dictionnary, implementation.name) != null)
+                        bim.addAll(methods(dictionnary, implementation.name));
+                }
+
+
+                //-- left union des méthodes concrètes de la classe (t) avec les méthodes de la superclasse (bms)
+                //unionBy : directly add all 1rst arg content, next iterate on the 2nd arg and verify that IT DONT VALIDATE THE CONDITION (if at least one condition is ok, we don't add it)
+                //Set to secure no duplicata in the collection
+                //m' = unionBy (...) defmeths bim
+                TreeSet<Definition.Method> mPrime = new TreeSet<>();
+                mPrime.addAll(interfaceT1.tDeclaration.methods);
+                boolean checkCondition = true;
+
+                for (Definition.Method bm : bim) {
+                    for(Definition.Method meth : interfaceT1.tDeclaration.methods) {
+                        if(meth.signature.name.contentEquals(bm.signature.name)) {
+                            checkCondition = false;
+                            break;
+                        }
+                    }
+
+                    if(checkCondition) {
+                        mPrime.add(bm);
+                    } else {
+                        checkCondition = true;
+                    }
+                }
+
+                return new ArrayList<>(mPrime);
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
+     * -- Function: mbody
+     * -- Objective: Search for a class on class table, then looks up for a method
+     * -- and returns its body.
+     * -- Params: Class table, Method name, Class name.
+     * -- Returns: A monad Maybe containing the method body or Nothing.
+     * ---------------------------------------------------------------------------
+     * @param dictionnary
+     * @param methodName
+     * @param className
+     * @return
+     */
+    public static Definition.Method mbody(Definition.CT dictionnary, String methodName, String className) {
+        if(className.contentEquals("Object")) return null;
+
+        //TODO
+        ArrayList<Definition.Method> meths = methods(dictionnary, className);
+        //case (methods ct t) of    Just meths
+        if(meths != null) {
+            Definition.Method methodInClass = null;
+
+            //case (Data.List.find (\(Method (Sign _ m' _) _) -> m == m') meths) of     --find return the first element that match the predicate or nothing
+            for (Definition.Method meth : meths) {
+                if(meth.signature.name.contentEquals(methodName)) {
+                    methodInClass = meth;
+                    break;
+                }
+            }
+
+            //Just (Method (Sign _ _ p) e) -> Just (snd (unzip p), e)
+            //p Signature.params, e Method.body
+            //snd(unzip p) will get Field.nameField
+            if(methodInClass != null) {
+                //TODO creer un type de reotur adequat
+            }
+
+        }
+
+        return null;
+    }
 
     /**
      * -- Function: isValue
