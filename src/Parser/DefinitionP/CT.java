@@ -6,10 +6,10 @@ import java.util.HashMap;
  * Class Table
  * A mapping from class or interface names to class or interface declarations
  * Using a singleton as we have to have one dictionary for one app
- * Type -> Type.name
- * T -> T.declaration
+ * Type -> Type.name (String)
+ * T -> T.declaration (Declaration
  */
-public class CT extends HashMap<Type, T> {
+public class CT {
 
     public static final C baseObject = new C("Object", new ClassDeclaration(new Constructor("Object")));
     private static CT instance;
@@ -30,4 +30,9 @@ public class CT extends HashMap<Type, T> {
     public static C getBaseObject() {
         return baseObject;
     }
+
+    public HashMap<Type, T> getHashMap() {
+        return hashMap;
+    }
+
 }

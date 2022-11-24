@@ -42,11 +42,11 @@ public class FJUtils implements IUtils {
             Type castNameTypeT1 = new Type(nameT1);
             Type castNameTypeT2 = new Type(nameT2);
 
-            if (dictionnary.containsKey(castNameTypeT1)) {
+            if (dictionnary.getHashMap().containsKey(castNameTypeT1)) {
                 //Is t1 a class or an Interface ?
-                if (dictionnary.get(castNameTypeT1).eType == EType.CLASS) { //TODO définir condition
+                if (dictionnary.getHashMap().get(castNameTypeT1).eType == EType.CLASS) { //TODO définir condition
                     //t1 is a class
-                    C classT1 = (C) dictionnary.get(castNameTypeT1);
+                    C classT1 = (C) dictionnary.getHashMap().get(castNameTypeT1);
                     T superclassT1 = classT1.extensions.first();
                     //T superclassT1 = classT1.extensions[0];
                     //Class _ t'' il _ _ _
@@ -64,9 +64,9 @@ public class FJUtils implements IUtils {
                         //return (subtyping(dictionnary, superclassT1.name, nameT2) || Arrays.stream(classT1.implementations).anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
                         return (subtyping(dictionnary, superclassT1.name, nameT2) || classT1.implementations.stream().anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
                     }
-                } else if (dictionnary.get(castNameTypeT1).eType == EType.INTERFACE) { //TODO définir condition
+                } else if (dictionnary.getHashMap().get(castNameTypeT1).eType == EType.INTERFACE) { //TODO définir condition
                     //t1 is an Interface
-                    I interfaceT1 = (I) dictionnary.get(castNameTypeT1);
+                    I interfaceT1 = (I) dictionnary.getHashMap().get(castNameTypeT1);
                     //Interface _ il _ _
                     //todo Need to get : Interface
 
@@ -92,8 +92,8 @@ public class FJUtils implements IUtils {
         Type castNameTypeT1 = new Type(nameT1);
 
         //case (Data.Map.lookup c ct) of Just (TClass (Class _ c'' _ attrs _ _)) ->
-        if (dictionnary.containsKey(castNameTypeT1) && dictionnary.get(castNameTypeT1).eType == EType.CLASS) {
-            C classT1 = (C) dictionnary.get(castNameTypeT1);
+        if (dictionnary.getHashMap().containsKey(castNameTypeT1) && dictionnary.getHashMap().get(castNameTypeT1).eType == EType.CLASS) {
+            C classT1 = (C) dictionnary.getHashMap().get(castNameTypeT1);
             //T superclassT1 = classT1.extensions[0];
             T superclassT1 = classT1.extensions.first();
 
@@ -123,10 +123,10 @@ public class FJUtils implements IUtils {
         //If t1 don't exist on the dictionnary, we can't compare
         Type castClassNameType = new Type(className);
 
-        if (dictionnary.containsKey(castClassNameType)) {
-            if (dictionnary.get(castClassNameType).eType == EType.CLASS) { //TODO définir condition
+        if (dictionnary.getHashMap().containsKey(castClassNameType)) {
+            if (dictionnary.getHashMap().get(castClassNameType).eType == EType.CLASS) { //TODO définir condition
                 //className is a class
-                C classT1 = (C) dictionnary.get(castClassNameType);
+                C classT1 = (C) dictionnary.getHashMap().get(castClassNameType);
                 T superclassT1 = classT1.extensions.first();
                 //List<Method> methodsT1 = classT1.tDeclaration.methods;
                 //Class _ cb il _ _ meths
@@ -196,11 +196,11 @@ public class FJUtils implements IUtils {
                 } else {
                     return null;
                 }
-            } else if (dictionnary.get(castClassNameType).eType == EType.INTERFACE) { //TODO définir condition
+            } else if (dictionnary.getHashMap().get(castClassNameType).eType == EType.INTERFACE) { //TODO définir condition
                 //Just (TInterface (Interface _ il _ defmeths))
 
                 //className is an interface
-                I interfaceT1 = (I) dictionnary.get(castClassNameType);
+                I interfaceT1 = (I) dictionnary.getHashMap().get(castClassNameType);
                 //List<Method> defmeths = classT1.tDeclaration.methods;
                 //Interface _ il _  defmeths
                 //-- on récupère la liste des interfaces (il) etendues par l'interface (t) et ses default methodes (defmeths) -- => ici (t) est une interface
