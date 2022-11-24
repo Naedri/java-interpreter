@@ -184,12 +184,52 @@ public class FJInterpreter implements IInterpreter {
         }
 
 
-        //TODO eval' ct cc@(Cast t e) =
+        // eval' ct cc@(Cast t e) =
+        //le cc@ peux être lu comme :    let cc = Cast t e    in eval'(CT ct, cc)
+        if (expression instanceof Cast cast) {
+            //cast.f = t, cast.expr = e
+            //if (isValue ct e)
+            if(FJUtils.isValue(dictionnary, cast.expr)) {
+                //obj@(CreateObject c' p)
+                if(cast.expr instanceof CreateObject obj) {
+                    if(FJUtils.subtyping(dictionnary, obj.name, cast.f)) {
+                        //-- R-Cast
+                        return obj;
+                    } else {
+                        return null;
+                    }
+                } else if(cast.expr instanceof Cast castParent && castParent.expr instanceof Closure) {
+                    if(FJUtils.subtyping(dictionnary, castParent.f, cast.f)) {
+                        //-- R-Cast-Lam
+                        return castParent;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    //-- annotated lambda expression is a value
+                    return cast;
+                }
+            } else {
+                //case (eval' ct e) of       Just e' -> Just (Cast t e')
+                Expr ePrime = evalPrime(dictionnary, cast.expr);
+                if(ePrime != null) {
+                    return new Cast(cast.f, ePrime);
+                } else {
+                    return null;
+                }
+            }
+        }
 
         //TODO eval' ct cl@(Closure _ _) = Just cl
-
+        if(expression instanceof Closure cl) {
+            return cl;
+        } else {
+            return null;
+        }
+        
         //eval' _ _ = Nothing
-        return null;
+        //code unreachable
+        //return null;
     }
 
     //TODO
