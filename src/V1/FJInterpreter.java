@@ -2,6 +2,7 @@ package V1;
 
 import Parser.DefinitionP.CT;
 import Parser.DefinitionP.Field;
+import Parser.DefinitionP.MethodBody;
 import Parser.ExpressionP.*;
 import Utils.FJUtils;
 
@@ -111,10 +112,37 @@ public class FJInterpreter implements IInterpreter {
                 if (isAllInCT) {
                     //case e of      (CreateObject c p) ->
                     if (methodInvk.parent instanceof CreateObject e) {
-                        //-- R-Invk -- modif quand V2
+                        //-- R-Invk
+
+                        //case (mbody ct m c) of    Just (fpn, e')
+                        MethodBody methodBody = FJUtils.mbody(dictionnary, methodInvk.name, e.name);
+                        if(methodBody != null) {
+                            //subst (fpn ++ ["this"]) (p ++ [e]) e' //TODO possible en immutable en créeant une copie locale. Nécessaire ?
+
+                            TreeSet<String> copyNameFields = methodBody.nameFields; //(fpn ++ ["this"])
+                            copyNameFields.add("this");
+
+                            TreeSet<Expr> copyParams = ((MethodInvk) expression).params; //(p ++ [e])
+                            copyParams.add(methodInvk.parent);
+
+                            return subst(copyNameFields, copyParams, methodBody.body);
+                        } else {
+                            //no method body
+                            return null;
+                        }
+                    } else if (methodInvk.parent instanceof Cast && ((Cast) methodInvk.parent).expr instanceof Closure) { //(Cast i (Closure cp exp)) ->
                         //TODO
-                    } else if (methodInvk.parent instanceof Cast) {
-                        //TODO
+                        Cast castParent = (Cast) methodInvk.parent;
+                        Closure closureParent = (Closure) castParent.expr;
+
+                        //case (mbody ct m i) of    Just (fpn, e')
+                        MethodBody mbody = FJUtils.mbody(dictionnary, methodInvk.name, castParent.f);
+                        if(mbody != null) {
+                            // --R-Default
+                            return subst(mbody.nameFields, methodInvk.params, mbody.body);
+                        } else {
+                            //TODO --R-Lam
+                        }
                     } else {
                         return null;
                     }
@@ -135,9 +163,10 @@ public class FJInterpreter implements IInterpreter {
         return null;
     }
 
+    //TODO
     @Override
-    public Optional<Expr> subst(String[] paramNames, Expr[] params, Expr bodyExpression) {
-        return Optional.empty();
+    public Expr subst(TreeSet<String> paramNames, TreeSet<Expr> params, Expr bodyExpression) {
+        return null;
     }
 
     //TODO doit tester R-Field et RC-Field
