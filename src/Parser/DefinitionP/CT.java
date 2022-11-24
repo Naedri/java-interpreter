@@ -4,11 +4,19 @@ import java.util.HashMap;
 
 /**
  * Class Table
- * TODO how can we use Field class wrapper to type the hash map ?
- * TODO singleton ? if so need a factory
+ * Usin a singleton as we have to have one dictionary for one app
  */
-//TODO we should have a Singleton for this (only one dictionary for one app)
 public class CT extends HashMap<Type, T> {
-    public CT() {
+    private static CT instance;
+
+    private CT() {
+    }
+
+    public static CT getInstance() {
+        if (instance == null) {
+            instance = new CT();
+        }
+
+        return instance;
     }
 }
