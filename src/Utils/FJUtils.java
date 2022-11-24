@@ -258,7 +258,7 @@ public class FJUtils implements IUtils {
      * @param className
      * @return
      */
-    public static Method mbody(CT dictionnary, String methodName, String className) {
+    public static MethodBody mbody(CT dictionnary, String methodName, String className) {
         if (className.contentEquals("Object")) return null;
 
         //TODO
@@ -279,7 +279,13 @@ public class FJUtils implements IUtils {
             //p Signature.params, e Method.body
             //snd(unzip p) will get Field.nameField
             if (methodInClass != null) {
-                //TODO creer un type de reotur adequat
+                //TODO creer un type de retour adequat
+                MethodBody methodBody = new MethodBody(methodInClass.body);
+                for (Field param : methodInClass.signature.params) {
+                    methodBody.nameFields.add(param.nameField);
+                }
+
+                return methodBody;
             }
 
         }
