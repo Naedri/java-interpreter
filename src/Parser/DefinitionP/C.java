@@ -17,6 +17,6 @@ public class C extends T {
 
     // we still have to ask for the declaration in order to retrieve the constructor even if there is no field
     public C(String name, ClassDeclaration declaration) {
-        super(EType.CLASS, name, new C("Object", new ClassDeclaration(new Constructor("Object"))), declaration);
+        super(EType.CLASS, name, CT.getBaseObject(), declaration);
     }
 }

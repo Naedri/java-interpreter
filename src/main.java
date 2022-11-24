@@ -10,10 +10,9 @@ import java.util.TreeSet;
 public class main {
 
     public static void TestObject() {
-        ClassDeclaration classDeclaration = new ClassDeclaration(new Constructor("Object"));
-        System.out.println(classDeclaration);
-        C baseObject = new C("Object", classDeclaration);
-        System.out.println(baseObject);
+        ClassDeclaration classDeclaration = new ClassDeclaration(new Constructor("SimpleObject"));
+        C simpleObject = new C("SimpleObject", classDeclaration);
+        System.out.println(simpleObject);
     }
 
     public static void TestCounter() {
