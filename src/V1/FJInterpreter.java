@@ -141,16 +141,45 @@ public class FJInterpreter implements IInterpreter {
                             // --R-Default
                             return subst(mbody.nameFields, methodInvk.params, mbody.body);
                         } else {
-                            //TODO --R-Lam
+                            // --R-Lam
+
+                            //subst (snd (unzip cp)) p exp
+                            TreeSet<String> closureParentParamsNameFields = new TreeSet<>();//snd (unzip cp)
+                            for (Field param : closureParent.params) {
+                                closureParentParamsNameFields.add(param.nameField);
+                            }
+
+                            return subst(closureParentParamsNameFields, methodInvk.params, closureParent.body);
                         }
                     } else {
                         return null;
                     }
                 } else {
-                    //TODO -- RC-Invk-Arg
+                    // RC-Invk-Arg
+                    //let p' = Data.List.map (\x -> case (eval' ct x) of Just x' -> x') p
+                    TreeSet<Expr> pPrime = new TreeSet<>();
+
+                    //param = x
+                    Expr result;
+                    for (Expr param : methodInvk.params) {
+                        result = evalPrime(dictionnary, param);
+                        if(result != null)
+                            pPrime.add(result);
+                    }
+
+                    //in Just (MethodInvk e m p')
+                    return new MethodInvk(methodInvk.parent, methodInvk.name, pPrime);
                 }
             } else {
-                //TODO -- RC-Invk-Recv
+                // -- RC-Invk-Recv
+                //Just e' -> Just (MethodInvk e' m p)
+                Expr ePrime = evalPrime(dictionnary, methodInvk.parent);
+
+                if(ePrime != null) {
+                    return new MethodInvk(ePrime, methodInvk.name, methodInvk.params);
+                } else {
+                    return null;
+                }
             }
         }
 
