@@ -1,7 +1,10 @@
 package Utils;
 
-import Parser.Definition;
-import Parser.Expression;
+import Parser.DefinitionP.*;
+import Parser.ExpressionP.Cast;
+import Parser.ExpressionP.Closure;
+import Parser.ExpressionP.CreateObject;
+import Parser.ExpressionP.Expr;
 
 import java.util.TreeSet;
 
@@ -28,22 +31,22 @@ public class FJUtils implements IUtils {
      */
     //TODO si on teste avant que t2 est une classe ou interface, on peut simplifier les tests
     //TODO passer en pattern visiteur
-    public static Boolean subtyping(Definition.CT dictionnary, String nameT1, String nameT2) {
+    public static Boolean subtyping(CT dictionnary, String nameT1, String nameT2) {
         try {
             // compare if the two object
             if (nameT1.contentEquals(nameT2)) return true;
 
             //case (Data.Map.lookup t ct) of
             //If t1 don't exist on the dictionnary, we can't compare
-            Definition.Type castNameTypeT1 = Definition.getInstance().new Type(nameT1);
-            Definition.Type castNameTypeT2 = Definition.getInstance().new Type(nameT2);
+            Type castNameTypeT1 = new Type(nameT1);
+            Type castNameTypeT2 = new Type(nameT2);
 
             if (dictionnary.containsKey(castNameTypeT1)) {
                 //Is t1 a class or an Interface ?
-                if (dictionnary.get(castNameTypeT1).eType == Definition.EType.CLASS) { //TODO définir condition
+                if (dictionnary.get(castNameTypeT1).eType == EType.CLASS) { //TODO définir condition
                     //t1 is a class
-                    Definition.C classT1 = (Definition.C) dictionnary.get(castNameTypeT1);
-                    Definition.T superclassT1 = classT1.extensions.first();
+                    C classT1 = (C) dictionnary.get(castNameTypeT1);
+                    T superclassT1 = classT1.extensions.first();
                     //Definition.T superclassT1 = classT1.extensions[0];
                     //Class _ t'' il _ _ _
                     //need to get : Class _ (name of the superclass) (list of interfaces implemented) _ _ _
@@ -60,9 +63,9 @@ public class FJUtils implements IUtils {
                         //return (subtyping(dictionnary, superclassT1.name, nameT2) || Arrays.stream(classT1.implementations).anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
                         return (subtyping(dictionnary, superclassT1.name, nameT2) || classT1.implementations.stream().anyMatch(i -> subtyping(dictionnary, i.name, nameT2)));
                     }
-                } else if (dictionnary.get(castNameTypeT1).eType == Definition.EType.INTERFACE) { //TODO définir condition
+                } else if (dictionnary.get(castNameTypeT1).eType == EType.INTERFACE) { //TODO définir condition
                     //t1 is an Interface
-                    Definition.I interfaceT1 = (Definition.I) dictionnary.get(castNameTypeT1);
+                    I interfaceT1 = (I) dictionnary.get(castNameTypeT1);
                     //Interface _ il _ _
                     //todo Need to get : Interface
 
@@ -80,18 +83,18 @@ public class FJUtils implements IUtils {
     }
 
     //TODO return null ou liste vide ? --> return list pour utiliser la récursivité et compléter la liste suppérieure
-    public static TreeSet<Definition.Field> fields(Definition.CT dictionnary, String nameT1) {
-        TreeSet<Definition.Field> listFields = new TreeSet<>(new Definition.FieldComparator());
+    public static TreeSet<Field> fields(CT dictionnary, String nameT1) {
+        TreeSet<Field> listFields = new TreeSet<>(new Comparators.FieldComparator());
 
         if (nameT1.contentEquals("Object")) return listFields;
 
-        Definition.Type castNameTypeT1 = Definition.getInstance().new Type(nameT1);
+        Type castNameTypeT1 = new Type(nameT1);
 
         //case (Data.Map.lookup c ct) of Just (TClass (Class _ c'' _ attrs _ _)) ->
-        if (dictionnary.containsKey(castNameTypeT1) && dictionnary.get(castNameTypeT1).eType == Definition.EType.CLASS) {
-            Definition.C classT1 = (Definition.C) dictionnary.get(castNameTypeT1);
+        if (dictionnary.containsKey(castNameTypeT1) && dictionnary.get(castNameTypeT1).eType == EType.CLASS) {
+            C classT1 = (C) dictionnary.get(castNameTypeT1);
             //Definition.T superclassT1 = classT1.extensions[0];
-            Definition.T superclassT1 = classT1.extensions.first();
+            T superclassT1 = classT1.extensions.first();
 
             //case (fields ct c'') of    Just base -> Just (base ++ attrs)
             //We take the fiedls of the superclass T and we add the fields of the class
@@ -114,17 +117,17 @@ public class FJUtils implements IUtils {
      * @param exp         Expression to test
      * @return Boolean indicating if an expression is a value.
      */
-    public static Boolean isValue(Definition.CT dictionnary, Expression.Expr exp) {
+    public static Boolean isValue(CT dictionnary, Expr exp) {
 
         //is an Object instanciation ?
-        if (exp instanceof Expression.CreateObject) {
+        if (exp instanceof CreateObject) {
             //isValue _ (CreateObject c []) = True
             //is an Object instanciation with no Expr? Expr = CreateObject String [Expr] => same as the next, but "all (?) [] = True"
-            if (((Expression.CreateObject) exp).params.size() == 0) {
+            if (((CreateObject) exp).params.size() == 0) {
                 return true;
             } else {
                 //isValue ct (CreateObject c p) = Data.List.all (isValue ct) p    --is an Object instanciation with an Expr ? Expr = CreateObject String [Expr]  => is there all element of p that are defined in CT ?
-                for (Expression.Expr expr : ((Expression.CreateObject) exp).params) {
+                for (Expr expr : ((CreateObject) exp).params) {
                     if (!isValue(dictionnary, expr)) return false;
                 }
                 return true;
@@ -133,13 +136,11 @@ public class FJUtils implements IUtils {
 
         //isValue ct (Closure _ _) = True
         //is a lambda expression ?
-        if (exp instanceof Expression.Closure) return true;
+        if (exp instanceof Closure) return true;
 
         //isValue ct (Cast _ (Closure _ _)) = True
         //is a "cast" of a lambda expression ?
-        if (exp instanceof Expression.Cast && ((Expression.Cast) exp).expr instanceof Expression.Closure) return true;
-
-        return false;
+        return exp instanceof Cast && ((Cast) exp).expr instanceof Closure;
     }
 
     /*@Override

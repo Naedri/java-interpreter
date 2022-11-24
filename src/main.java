@@ -1,47 +1,50 @@
-import Parser.Definition;
-import Parser.Expression;
+import Parser.DefinitionP.*;
+import Parser.ExpressionP.CreateObject;
+import Parser.ExpressionP.Expr;
+import Parser.ExpressionP.FieldAccess;
+import Parser.ExpressionP.Var;
 
 import java.util.Arrays;
 import java.util.TreeSet;
 
 public class main {
 
-    public static void TestObject(Definition defP, Expression expP){
-        Definition.ClassDeclaration classDeclaration = defP. new ClassDeclaration(defP. new Constructor("Object"));
+    public static void TestObject() {
+        ClassDeclaration classDeclaration = new ClassDeclaration(new Constructor("Object"));
         System.out.println(classDeclaration);
-        Definition.C baseObject = defP. new C("Object", classDeclaration);
+        C baseObject = new C("Object", classDeclaration);
         System.out.println(baseObject);
     }
 
-    public static void TestCounter(Definition defP, Expression expP) {
-        Definition.Field param = defP.new Field(defP.new Type("int"), "count");
-        TreeSet<Definition.Field> params = new TreeSet<Definition.Field>(new Definition.FieldComparator());
+    public static void TestCounter() {
+        Field param = new Field(new Type("int"), "count");
+        TreeSet<Field> params = new TreeSet<Field>(new Comparators.FieldComparator());
         params.add(param);
 
-        Definition.InitiatedField initField = defP.new InitiatedField("count", "count");
-        TreeSet<Definition.InitiatedField> initFields = new TreeSet<Definition.InitiatedField>(new Definition.InitiatedFieldComparator()); //Arrays.asList(initField);
+        InitiatedField initField = new InitiatedField("count", "count");
+        TreeSet<InitiatedField> initFields = new TreeSet<InitiatedField>(new Comparators.InitiatedFieldComparator()); //Arrays.asList(initField);
         initFields.add(initField);
 
-        Definition.Constructor constructor = defP.new Constructor("Counter", params, initFields);//in Java name of the constructor should be the same than the class
-        Definition.ClassDeclaration declaration = defP.new ClassDeclaration(params, constructor);
-        Definition.C objetCounter = defP.new C("Counter", declaration);
+        Constructor constructor = new Constructor("Counter", params, initFields);//in Java name of the constructor should be the same than the class
+        ClassDeclaration declaration = new ClassDeclaration(params, constructor);
+        C objetCounter = new C("Counter", declaration);
         System.out.println(objetCounter);
     }
 
     public static void TestPairInitial() {
-        class A extends Object {
+        class A {
             A() {
                 super();
             }
         }
-        class B extends Object {
+        class B {
             B() {
                 super();
             }
         }
-        class Pair extends Object {
-            Object fst;
-            Object snd;
+        class Pair {
+            final Object fst;
+            final Object snd;
 
             Pair(Object fst, Object snd) {
                 super();
@@ -58,44 +61,42 @@ public class main {
         System.out.println(pair);
     }
 
-    public static void TestPair(Definition defP, Expression expP) {
-        Definition.C objectA = defP.new C("A", defP.new ClassDeclaration(defP.new Constructor("kA")));
-        Definition.C objectB = defP.new C("B", defP.new ClassDeclaration(defP.new Constructor("kB")));
+    public static void TestPair() {
+        C objectA = new C("A", new ClassDeclaration(new Constructor("kA")));
+        C objectB = new C("B", new ClassDeclaration(new Constructor("kB")));
 
-        Definition.Field param1 = defP.new Field(defP.new Type("Object"), "fst");
-        Definition.Field param2 = defP.new Field(defP.new Type("Object"), "snd");
-        TreeSet<Definition.Field> params = new TreeSet<>(new Definition.FieldComparator()); //Arrays.asList(param1, param2);
+        Field param1 = new Field(new Type("Object"), "fst");
+        Field param2 = new Field(new Type("Object"), "snd");
+        TreeSet<Field> params = new TreeSet<>(new Comparators.FieldComparator()); //Arrays.asList(param1, param2);
         params.add(param1);
         params.add(param2);
-        Definition.InitiatedField initField1 = defP.new InitiatedField("fst", "fst");
-        Definition.InitiatedField initField2 = defP.new InitiatedField("snd", "snd");
-        TreeSet<Definition.InitiatedField> initFields = new TreeSet<>(new Definition.InitiatedFieldComparator()); //Arrays.asList(initField1, initField2);
+        InitiatedField initField1 = new InitiatedField("fst", "fst");
+        InitiatedField initField2 = new InitiatedField("snd", "snd");
+        TreeSet<InitiatedField> initFields = new TreeSet<>(new Comparators.InitiatedFieldComparator()); //Arrays.asList(initField1, initField2);
         initFields.add(initField1);
         initFields.add(initField2);
-        Definition.Constructor constructor = defP.new Constructor("kPair", params, initFields);
+        Constructor constructor = new Constructor("kPair", params, initFields);
 
-        Expression.Expr body = expP.new CreateObject("Pair", Arrays.asList(expP.new Var("newfst"), expP.new FieldAccess(expP.new Var("this"), "snd")));
+        Expr body = new CreateObject("Pair", Arrays.asList(new Var("newfst"), new FieldAccess(new Var("this"), "snd")));
 
-        //Definition.Method setfst = defP.new Method(defP.new Signature(defP.new Type("Pair"), "setfst", Arrays.asList(defP.new Field(defP.new Type("Object"), "newfst"))), body);
-        TreeSet<Definition.Field> treeSetSetFST = new TreeSet<Definition.Field>(new Definition.FieldComparator());
-        treeSetSetFST.add(defP.new Field(defP.new Type("Object"), "newfst"));
-        Definition.Method setfst = defP.new Method(defP.new Signature(defP.new Type("Pair"), "setfst", treeSetSetFST), body);
-        TreeSet<Definition.Method> methods = new TreeSet<>(new Definition.MethodComparator());
+        //Definition.Method setfst = new Method(new Signature(new Type("Pair"), "setfst", Arrays.asList(new Field(new Type("Object"), "newfst"))), body);
+        TreeSet<Field> treeSetSetFST = new TreeSet<Field>(new Comparators.FieldComparator());
+        treeSetSetFST.add(new Field(new Type("Object"), "newfst"));
+        Method setfst = new Method(new Signature(new Type("Pair"), "setfst", treeSetSetFST), body);
+        TreeSet<Method> methods = new TreeSet<>(new Comparators.MethodComparator());
         methods.add(setfst);
-        Definition.C objectPair = defP.new C("Pair", defP.new ClassDeclaration(new TreeSet<Definition.Field>(new Definition.FieldComparator()) {
-        }, defP.new Constructor("kB"), methods));
+        C objectPair = new C("Pair", new ClassDeclaration(new TreeSet<Field>(new Comparators.FieldComparator()) {
+        }, new Constructor("kB"), methods));
 
         System.out.println(objectPair);
     }
 
     public static void main(String[] args) {
-        Definition defP = Definition.getInstance();
-        Expression expP = new Expression();
         try {
-            TestObject(defP,expP);
-            TestCounter(defP, expP);
+            TestObject();
+            TestCounter();
             TestPairInitial();
-            TestPair(defP, expP);
+            TestPair();
             System.out.println("OK");
         } catch (Error e) {
             System.err.println(e);

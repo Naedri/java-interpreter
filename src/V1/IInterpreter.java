@@ -1,8 +1,7 @@
 package V1;
 
-import Parser.Definition;
-import Parser.Expression;
-import Parser.Expression.Expr;
+import Parser.DefinitionP.CT;
+import Parser.ExpressionP.Expr;
 
 import java.util.Optional;
 
@@ -14,7 +13,7 @@ public interface IInterpreter {
      * @param expression
      * @return An expression after processing one reduction step
      */
-    public Expr evalPrime(Definition.CT classTable, Expr expression);
+    Expr evalPrime(CT classTable, Expr expression);
 
     /**
      * Replace actual parameters in method body expression.
@@ -24,5 +23,5 @@ public interface IInterpreter {
      * @param bodyExpression Method body expression
      * @return A new changed expression
      */
-    public Optional<Expression.Expr> subst(String[] paramNames, Expression.Expr[] params, Expression.Expr bodyExpression);
+    Optional<Expr> subst(String[] paramNames, Expr[] params, Expr bodyExpression);
 }
