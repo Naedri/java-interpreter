@@ -76,7 +76,11 @@ public class main {
         initFields.add(initField2);
         Constructor constructor = new Constructor("kPair", params, initFields);
 
-        Expr body = new CreateObject("Pair", Arrays.asList(new Var("newfst"), new FieldAccess(new Var("this"), "snd")));
+        TreeSet<Expr> bodyParams = new TreeSet<>();
+        bodyParams.add(new Var("newfst"));
+        bodyParams.add( new FieldAccess(new Var("this"), "snd"));
+        Expr body = new CreateObject("Pair", bodyParams);
+        //Expr body = new CreateObject("Pair", Arrays.asList(new Var("newfst"), new FieldAccess(new Var("this"), "snd")));
 
         //Definition.Method setfst = new Method(new Signature(new Type("Pair"), "setfst", Arrays.asList(new Field(new Type("Object"), "newfst"))), body);
         TreeSet<Field> treeSetSetFST = new TreeSet<Field>(new Comparators.FieldComparator());
