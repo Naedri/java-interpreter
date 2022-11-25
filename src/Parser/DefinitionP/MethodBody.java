@@ -6,7 +6,6 @@ import java.util.TreeSet;
 
 /**
  * Class created as a wrapper for the return of the method FJUtils.mbody
- *
  */
 public class MethodBody {
     public TreeSet<String> nameFields;

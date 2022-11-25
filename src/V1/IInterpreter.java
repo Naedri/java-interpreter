@@ -3,7 +3,6 @@ package V1;
 import Parser.DefinitionP.CT;
 import Parser.ExpressionP.Expr;
 
-import java.util.Optional;
 import java.util.TreeSet;
 
 public interface IInterpreter {
