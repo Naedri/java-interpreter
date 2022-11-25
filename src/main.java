@@ -4,7 +4,6 @@ import Parser.ExpressionP.Expr;
 import Parser.ExpressionP.FieldAccess;
 import Parser.ExpressionP.Var;
 
-import java.util.Arrays;
 import java.util.TreeSet;
 
 public class main {
@@ -78,7 +77,7 @@ public class main {
 
         TreeSet<Expr> bodyParams = new TreeSet<>();
         bodyParams.add(new Var("newfst"));
-        bodyParams.add( new FieldAccess(new Var("this"), "snd"));
+        bodyParams.add(new FieldAccess(new Var("this"), "snd"));
         Expr body = new CreateObject("Pair", bodyParams);
         //Expr body = new CreateObject("Pair", Arrays.asList(new Var("newfst"), new FieldAccess(new Var("this"), "snd")));
 

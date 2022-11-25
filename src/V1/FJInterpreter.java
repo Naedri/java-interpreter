@@ -158,9 +158,8 @@ public class FJInterpreter implements IInterpreter {
 
                         return subst(copyNameFields, copyParams, methodBody.body);
                     }
-                } else if (methodInvk.parent instanceof Cast && ((Cast) methodInvk.parent).expr instanceof Closure) { //(Cast i (Closure cp exp)) ->
+                } else if (methodInvk.parent instanceof Cast castParent && ((Cast) methodInvk.parent).expr instanceof Closure) { //(Cast i (Closure cp exp)) ->
                     //TODO
-                    Cast castParent = (Cast) methodInvk.parent;
                     Closure closureParent = (Closure) castParent.expr;
 
                     //case (mbody ct m i) of    Just (fpn, e')
