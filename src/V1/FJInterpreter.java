@@ -1,6 +1,7 @@
 package V1;
 
 import Parser.DefinitionP.CT;
+import Parser.DefinitionP.Comparators;
 import Parser.DefinitionP.Field;
 import Parser.DefinitionP.MethodBody;
 import Parser.ExpressionP.*;
@@ -8,7 +9,7 @@ import Utils.FJUtils;
 
 import java.util.TreeSet;
 
-public class FJInterpreter implements IInterpreter {
+public class FJInterpreter {
     //CT = Map de type String (pour le nom de la classe), Expression (le type Expr en haskell)
 
     /**
@@ -17,8 +18,7 @@ public class FJInterpreter implements IInterpreter {
      * Params : Class table, Expression
      * Returns : An expression after processing one reduction step
      */
-    @Override
-    public Expr evalPrime(CT dictionnary, Expr expression) {
+    public static Expr evalPrime(CT dictionnary, Expr expression) {
         // eval' ct (CreateObject c p) = -- RC-New-Arg
         if (expression instanceof CreateObject createObject) {
             return evalPrimeAsCreateObject(dictionnary, createObject);
@@ -59,8 +59,8 @@ public class FJInterpreter implements IInterpreter {
      *
      * @see CreateObject
      */
-    private Expr evalPrimeAsCreateObject(CT dictionnary, CreateObject createObject) {
-        TreeSet<Expr> p2 = new TreeSet<>();
+    private static Expr evalPrimeAsCreateObject(CT dictionnary, CreateObject createObject) {
+        TreeSet<Expr> p2 = new TreeSet<>(new Comparators.ExprComparator());
 
         /*let p' = Data.List.map (\x -> case (eval' ct x) of Just x' -> x') p
             in Just (CreateObject c p')*/
@@ -80,7 +80,7 @@ public class FJInterpreter implements IInterpreter {
      *
      * @see FieldAccess
      */
-    private Expr evalPrimeAsFieldAccess(CT dictionnary, FieldAccess fieldAccess) {
+    private static Expr evalPrimeAsFieldAccess(CT dictionnary, FieldAccess fieldAccess) {
         //if (isValue ct e) then -- R-Field
         if (FJUtils.isValue(dictionnary, fieldAccess.ownerCLass)) {
             //case e of      (CreateObject c p) ->
@@ -128,7 +128,7 @@ public class FJInterpreter implements IInterpreter {
      *
      * @see MethodInvk
      */
-    private Expr evalPrimeAsMethodInvk(CT dictionnary, MethodInvk methodInvk) {
+    private static Expr evalPrimeAsMethodInvk(CT dictionnary, MethodInvk methodInvk) {
         //if (isValue ct e) then -- expression existe dans le dico
         if (FJUtils.isValue(dictionnary, methodInvk.parent)) {
             //if (Data.List.all (isValue ct) p) then
@@ -159,7 +159,6 @@ public class FJInterpreter implements IInterpreter {
                         return subst(copyNameFields, copyParams, methodBody.body);
                     }
                 } else if (methodInvk.parent instanceof Cast castParent && ((Cast) methodInvk.parent).expr instanceof Closure) { //(Cast i (Closure cp exp)) ->
-                    //TODO
                     Closure closureParent = (Closure) castParent.expr;
 
                     //case (mbody ct m i) of    Just (fpn, e')
@@ -182,7 +181,7 @@ public class FJInterpreter implements IInterpreter {
             } else {
                 // RC-Invk-Arg
                 //let p' = Data.List.map (\x -> case (eval' ct x) of Just x' -> x') p
-                TreeSet<Expr> pPrime = new TreeSet<>();
+                TreeSet<Expr> pPrime = new TreeSet<>(new Comparators.ExprComparator());
 
                 //param = x
                 Expr result;
@@ -213,7 +212,7 @@ public class FJInterpreter implements IInterpreter {
      *
      * @see Cast
      */
-    private Expr evalPrimeAsCast(CT dictionnary, Cast cast) {
+    private static Expr evalPrimeAsCast(CT dictionnary, Cast cast) {
         //cast.f = t, cast.expr = e
         //if (isValue ct e)
         if (FJUtils.isValue(dictionnary, cast.expr)) {
@@ -250,7 +249,7 @@ public class FJInterpreter implements IInterpreter {
      * -- Params: Class table, Expression.
      * -- Returns: A value after all the reduction steps.
      */
-    public Expr eval(CT dictionnary, Expr expr) {
+    public static Expr eval(CT dictionnary, Expr expr) {
         if (FJUtils.isValue(dictionnary, expr)) {
             return expr;
         } else {
@@ -276,9 +275,7 @@ public class FJInterpreter implements IInterpreter {
      * @param bodyExpression Method body expression
      * @return
      */
-    //TODO
-    @Override
-    public Expr subst(TreeSet<String> paramNames, TreeSet<Expr> params, Expr bodyExpression) {
+    public static Expr subst(TreeSet<String> paramNames, TreeSet<Expr> params, Expr bodyExpression) {
         //subst p v (Var x) : p = paramNames, v = params, (Var x) = bodyExpression
         if (bodyExpression instanceof Var var) {
             return substAsVar(paramNames, params, var);
@@ -318,7 +315,7 @@ public class FJInterpreter implements IInterpreter {
      *
      * @see Var
      */
-    public Expr substAsVar(TreeSet<String> paramNames, TreeSet<Expr> params, Var var) {
+    private static Expr substAsVar(TreeSet<String> paramNames, TreeSet<Expr> params, Var var) {
         //subst p v (Var x) : p = paramNames, v = params, (Var x) = bodyExpression
 
         //case (Data.List.elemIndex x p) of   Just idx
@@ -347,7 +344,7 @@ public class FJInterpreter implements IInterpreter {
      *
      * @see FieldAccess
      */
-    public Expr substAsFieldAccess(TreeSet<String> paramNames, TreeSet<Expr> params, FieldAccess fieldAccess) {
+    private static Expr substAsFieldAccess(TreeSet<String> paramNames, TreeSet<Expr> params, FieldAccess fieldAccess) {
         //subst p v (FieldAccess e f) : p = paramNames, v = params, e = fieldAccess.ownerCLass, f = fieldAccess.name
 
         //case (subst p v e) of   Just e'
@@ -365,7 +362,7 @@ public class FJInterpreter implements IInterpreter {
      *
      * @see MethodInvk
      */
-    public Expr substAsMethodInvk(TreeSet<String> paramNames, TreeSet<Expr> params, MethodInvk methodInvk) {
+    private static Expr substAsMethodInvk(TreeSet<String> paramNames, TreeSet<Expr> params, MethodInvk methodInvk) {
         //subst p v (MethodInvk e n ap): p = paramNames, v = params, e = bodyExpression.parent, n = methodInvk.name, ap = methodInvk.params
 
         // case (subst p v e) of    Just e' -> Just (MethodInvk e' n ap')
@@ -374,7 +371,7 @@ public class FJInterpreter implements IInterpreter {
 
         if (ePrime != null) {
             //let ap' = Data.List.map (\x -> case (subst p v x) of Just x' -> x') ap
-            TreeSet<Expr> apPrime = new TreeSet<>();
+            TreeSet<Expr> apPrime = new TreeSet<>(new Comparators.ExprComparator());
 
             Expr substResult;
             for (Expr param : methodInvk.params) {
@@ -394,11 +391,11 @@ public class FJInterpreter implements IInterpreter {
      *
      * @see CreateObject
      */
-    public Expr substAsCreateObject(TreeSet<String> paramNames, TreeSet<Expr> params, CreateObject createObject) {
+    private static Expr substAsCreateObject(TreeSet<String> paramNames, TreeSet<Expr> params, CreateObject createObject) {
         //subst p v (CreateObject c ap): p = paramNames, v = params, c = createObject.name, ap = createObject.params
 
         //let ap' = Data.List.map (\x -> case (subst p v x) of Just x' -> x') ap
-        TreeSet<Expr> apPrime = new TreeSet<>();
+        TreeSet<Expr> apPrime = new TreeSet<>(new Comparators.ExprComparator());
 
         Expr substResult;
         for (Expr param : createObject.params) {
@@ -415,7 +412,7 @@ public class FJInterpreter implements IInterpreter {
      *
      * @see Cast
      */
-    public Expr substAsCast(TreeSet<String> paramNames, TreeSet<Expr> params, Cast cast) {
+    private static Expr substAsCast(TreeSet<String> paramNames, TreeSet<Expr> params, Cast cast) {
         //subst p v (Cast c e): p = paramNames, v = params, c = cast.f, e = cast.expr
 
         //case (subst p v e) of     Just e' -> Just (Cast c e')

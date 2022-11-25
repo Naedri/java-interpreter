@@ -9,7 +9,7 @@ import Parser.ExpressionP.Expr;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-public class FJUtils implements IUtils {
+public class FJUtils {
     //public static class subtyping(CT table, Class a, Class b){ }
     //public static class fields(CT table, Class a, Class b){ }
     /*public static class absmethods(CT table, Class a, Class b){ }
