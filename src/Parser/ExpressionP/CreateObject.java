@@ -1,6 +1,6 @@
 package Parser.ExpressionP;
 
-import java.util.List;
+import java.util.TreeSet;
 
 /**
  * object creation/instantiation
@@ -8,9 +8,9 @@ import java.util.List;
  */
 public class CreateObject extends Expr {
     public String name; // of the class
-    public List<Expr> params;
+    public TreeSet<Expr> params;
 
-    public CreateObject(String name, List<Expr> params) {
+    public CreateObject(String name, TreeSet<Expr> params) {
         this.name = name;
         this.params = params;
     }

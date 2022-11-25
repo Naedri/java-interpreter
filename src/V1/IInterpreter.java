@@ -3,7 +3,7 @@ package V1;
 import Parser.DefinitionP.CT;
 import Parser.ExpressionP.Expr;
 
-import java.util.Optional;
+import java.util.TreeSet;
 
 public interface IInterpreter {
     /**
@@ -23,5 +23,5 @@ public interface IInterpreter {
      * @param bodyExpression Method body expression
      * @return A new changed expression
      */
-    Optional<Expr> subst(String[] paramNames, Expr[] params, Expr bodyExpression);
+    Expr subst(TreeSet<String> paramNames, TreeSet<Expr> params, Expr bodyExpression);
 }
