@@ -17,7 +17,9 @@ L'objectif de ce projet est de convertir ces interprètes en Java et de démontr
 
 # Description du code
 
-Pour faciliter la compréhension globale du code, un [diagramme de classe a été réalisé](https://github.com/Naedri/java-interpreter/blob/main/diagram/java-interpreter-class-diagram.png).
+Pour faciliter la compréhension globale du code, un [diagramme de classe a été réalisé](https://github.com/Naedri/java-interpreter/blob/main/diagram/java-interpreter-class-diagram.png) : 
+
+![class-diagram](https://github.com/Naedri/java-interpreter/blob/main/diagram/java-interpreter-class-diagram.png)
 
 ## Comment le code est-il organisé ?
 
