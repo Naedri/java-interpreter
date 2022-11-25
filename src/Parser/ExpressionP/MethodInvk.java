@@ -12,6 +12,7 @@ public class MethodInvk extends Expr {
     public TreeSet<Expr> params;
 
     public MethodInvk(Expr parent, String name, TreeSet<Expr> params) {
+        super(3);
         this.parent = parent;
         this.name = name;
         this.params = params;

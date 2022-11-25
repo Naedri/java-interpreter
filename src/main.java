@@ -75,7 +75,7 @@ public class main {
         initFields.add(initField2);
         Constructor constructor = new Constructor("kPair", params, initFields);
 
-        TreeSet<Expr> bodyParams = new TreeSet<>();
+        TreeSet<Expr> bodyParams = new TreeSet<>(new Comparators.ExprComparator());
         bodyParams.add(new Var("newfst"));
         bodyParams.add(new FieldAccess(new Var("this"), "snd"));
         Expr body = new CreateObject("Pair", bodyParams);

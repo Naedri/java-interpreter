@@ -13,6 +13,7 @@ public class Closure extends Expr {
     public Expr body;
 
     public Closure(List<Field> params, Expr body) {
+        super(6);
         this.params = params;
         this.body = body;
     }

@@ -11,6 +11,7 @@ public class CreateObject extends Expr {
     public TreeSet<Expr> params;
 
     public CreateObject(String name, TreeSet<Expr> params) {
+        super(4);
         this.name = name;
         this.params = params;
     }

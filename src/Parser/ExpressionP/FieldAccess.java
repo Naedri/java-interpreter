@@ -10,6 +10,7 @@ public class FieldAccess extends Expr {
     public String name;
 
     public FieldAccess(Expr ownerCLass, String name) {
+        super(2);
         this.ownerCLass = ownerCLass;
         this.name = name;
     }
