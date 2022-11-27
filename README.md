@@ -224,7 +224,7 @@ Si nous avions à recommencer, nous aurions une courbe d'apprentissage sur la co
 - $\overline{x}$ : séquence possiblement vide de $x$
 - $\bullet$ : séquence vide <=> `[]`
 - $\sharp \overline{x}$ : taille de la séquence de $x$
-- $\langle \rangle$ : séquence dont l'ordre est à prendre en compte (à la différence d'une liste)
+- $\langle \rangle$ : couple dont l'ordre est à prendre en compte (à la différence d'une paire)
 - $( \overline{T} \overline{x} )$ : séquence de paramètre $x$ qui sont de type $T$
 - $T <: U$ ou $T <: \overline{U}$ : $T$ est sous type de $U$ ou de toutes les occurences de $\overline{U}$ respectivement
 - $( \overline{T} \overline{x} ) \rightarrow e$ : définition formelle d'une fonction anonyme (d'une $\lambda$`-expression`) de  $\sharp x$ paramètres, dont le corps est défini par l'expression $e$
