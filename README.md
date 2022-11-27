@@ -81,13 +81,9 @@ Les tests qui ont pu être réalisés se résument à s'assurer que les objets c
 
 ## Quelles méthodes en Haskell, reste-il à convertir en Java ?
 
-La partie V2 n'a pas pu être implémentée vers le Java, faute de temps.
-
 |                           |                      |                        |
 | ------------------------- | -------------------- | ---------------------- |
-| **`FJParser`**            |                      |                        |
-| `Constr`                  | `Sign`               |                        |
-| `FJUtils`                 |                      |                        |
+| **`FJUtils`**             |                      |                        |
 | `absmethods`              | `mtype`              | `lambdaMark`           |
 | `removeRuntimeAnnotation` |                      |                        |
 | **`FJTypeChecker`**       |                      |                        |
@@ -210,31 +206,69 @@ Si nous avions à recommencer, nous aurions une courbe d'apprentissage sur la co
 
 #### concepts java
 
-- `functional interface` : interface possédant une et une seule méthode abstraite
+- `functional interface` : interface possédant une et une seule méthode abstraite (dont seule la signature est indiquée)
 - `abstract method`: une méthode sans implémentation
-- `default method` : une méthode déclarées dans une interface
-- $\lambda$`-expression` / $\lambda$`-fonction`: fonction anonyme qui implémente une interface fonctionnelle mais qui est écrit sans type. Une $\lambda$`-expression` ne peut cependant être appelée sans type.
+- `default method` : une méthode déclarée dans une interface, et qui possède une implémentation par défault. 
+- $\lambda$`-expression` / $\lambda$`-fonction`: fonction anonyme qui implémente une interface fonctionnelle mais qui est écrit sans type. 
+  - Elles ne peuvent cependant être appelées sans type.
+  - Elles permettent au programme de traiter les fonctions comme l'argument de méthode
 - `Object`: Base class of every class, which has no fields (so the invocations of super have no arguments) and no methods
-- `target type` : type d'une $\lambda$`-expression` inféré par le compilateur en fonction du contexte de celle-ci. Ce type est nécessaire pour que la $\lambda$`-expression` puisse être invoquée.
+- `target type` : type d'une $\lambda$`-expression` inféré par le compilateur en fonction du contexte de celle-ci. Ce type est nécessaire pour que la $\lambda$`-expression` puisse être invoquée
+- `type elaboration` : la tâche de construire une représentation explicitement typée du programme
+- `type inference` : le problème de déterminer si un programme est bien typé
+- `type soudness` : 
+- `params` vs. `args`: on définit les paramètres d'une fonction, qu'on appelle en lui passant des arguments
+
+#### concepts mathématiques
+
+- $\overline{x}$ : séquence possiblement vide de $x$
+- $\bullet$ : séquence vide <=> `[]`
+- $\sharp \overline{x}$ : taille de la séquence de $x$
+- $\langle \rangle$ : séquence dont l'ordre est à prendre en compte (à la différence d'une liste)
+- $( \overline{T} \overline{x} )$ : séquence de paramètre $x$ qui sont de type $T$
+- $T <: U$ ou $T <: \overline{U}$ : $T$ est sous type de $U$ ou de toutes les occurences de $\overline{U}$ respectivement
+- $( \overline{T} \overline{x} ) \rightarrow e$ : définition formelle d'une fonction anonyme (d'une $\lambda$`-expression`) de  $\sharp x$ paramètres, dont le corps est défini par l'expression $e$
+- $\Gamma$ : représente un mapping fini : $\overline{x}:\overline{T}$, reliant les variables $x$ (leur nom) à leur type $T$ => définir le contexte/environnement
+  - $\Gamma \vdash E : T$ : "Dans le context $\Gamma$, l'expression $E$ est de type $T$"
+- $CT$ : représente une table qui associe le noms des interfaces ou des classes à leur déclaration ($L$ ou $P$) => mémoriser le programme source
 
 #### concepts logiques
 
 - séquent : conjonction d'hypothèses $\vdash$ disjonction de conclusion
 - règles : $\frac{premises}{conclusion}$ de séquent
 
-#### concepts mathématiques
+##### [exemple](https://www.everything2.org/index.pl?node=Judgment)
 
-- $\overline{x}$ : liste/séquence possiblement vide de $x$
-- $\bullet$ : séquence vide : `[]`
-- $\langle \rangle$ : séquence dont l'ordre est à prendre en compte (à la différence d'une liste)
-- $\Gamma$ : représente un mapping fini : $\overline{x}:\overline{T}$, reliant les variables $x$ à leur type $T$ => **contexte**/**environnement**
-- $CT$ : représente une table qui associe le noms des interfaces ou des classes à leur déclaration ($L$ ou $P$)
+$\frac{ \Gamma , x : T1 \vdash E : T2 }{ \Gamma \vdash (\lambda x : T1 . E) : T1 \rightarrow T2 }$
+
+qui dit que nous pouvons conclure que $ (\lambda x : T1 . E)$ a le type $T1 \rightarrow T2$ (c'est-à-dire que c'est une fonction de valeurs de type T1 vers des valeurs de type T2) dans le contexte $\Gamma$, à condition que dans le contexte étendu où nous portons l'hypothèse supplémentaire que x a le type T1, nous puissions montrer que E a le type T2.
 
 #### méthodes
 
-- `mtype` : permet d'obtenir le type d'une méthode m dans une classe C, en renvoiyant une paire de `[liste de B, B]` <=> `liste de paramètre et type`
-- `mbody` : permet d'obtenir une paire de `[liste de B, B]` <=> `liste des paramètres, expression`
+- `mtype` : permet d'obtenir le type d'une méthode m dans une classe C, en renvoyant une paire de `[liste de Type, Type]` <=> `types de paramètres de la méthode et le type de rentour de la méthode`
+- `mbody` : permet d'obtenir une paire de `(liste de String, Expr)` <=> `liste des paramètres, expression`
 - $\lambda$`mark` : fonction qui ajoute une définition de `cast` si et seulement si la $\lambda$`-expression` apparaît dans le code source
+
+### FJ vs Java
+
+Featherweight Java (FJ) est une version allégée de Java, mais dont la sémantique est rigoureusement définie. Elle a été introduit par l'article suivant : 
+[Featherweight Java: A minimal core calculus for Java and GJ (Igarashi et al., 2001)](https://dl.acm.org/doi/10.1145/503502.503505). 
+
+| Java | Haskell              |
+| ---- | -------------------- |
+| FJ   | $\lambda$`-calculus` |
+
+Les fonctionalités Java suivantes sont absentes de FJ : 
+- impact des opérations d'objets sur les attributs en mémoire,
+- interfaces,
+- surcharges
+- appels au méthode des classes de base,
+- pointeur null
+- types de basases
+- méthodes abstraite
+- états
+- control d'accès
+- exceptions
 
 ## [Fichier de log](https://pad.faire-ecole.org/s/suGTsvbBS#)
 
