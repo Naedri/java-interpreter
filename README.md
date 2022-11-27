@@ -251,7 +251,7 @@ qui dit que nous pouvons conclure que $ (\lambda x : T1 . E)$ a le type $T1 \ri
 
 - `mtype` : permet d'obtenir le type d'une méthode m dans une classe C, en renvoyant une paire de `[liste de Type, Type]` <=> `types de paramètres de la méthode et le type de rentour de la méthode`
 - `mbody` : permet d'obtenir une paire de `(liste de String, Expr)` <=> `liste des paramètres, expression`
-- $\lambda$`mark` : fonction qui ajoute une définition de `cast` si et seulement si la $\lambda$`-expression` apparaît dans le code source
+- $\lambda$`mark` : fonction qui ajoute, lors du *run-time*, une définition de `cast` si et seulement si la $\lambda$`-expression` apparaît dans le code source
 - `fields` : fonction qui renvoie une liste  `(Type, String)` <=> `liste composée du tpye et du nom de chaque attributs`
 
 ### Règles
@@ -261,23 +261,29 @@ qui dit que nous pouvons conclure que $ (\lambda x : T1 . E)$ a le type $T1 \ri
 ##### `T-Var`
 
 Si dans notre environnement, on a une variable $x$ de type $T$ ;
+
 Alors son type peut être jugé tel que $x \leadsto \langle T , x \rangle $. 
 
 Autrement dit, son type la variable $x$ peut-être annotée du type $T$ / castée en type $T$.
 
 ##### `T-Field`
 
-Si dans notre environnement, il existe une expression $e_0$, tel que le jugement de type permet un cast en une expression $e_0$ de type classe $C_0$, 
+Si dans notre environnement, il existe une expression $e_0$, tel que le jugement de type permet un cast en une expression $e_0$ de type classe $C_0$
+(s'il existe une expression $e_0$ associée à $e_0'$ annotée du type $C_0$), 
 et si l'on définit les attributs de la classe $C_0$ par $\overline{T} \overline{f}$ ;
+
 Alors le type d'un attribut $f_i$ de $e$ peut être jugé tel que  $xleadsto \langle T , x \rangle $. 
 
 Autrement dit, si l'on peut caster une classe $A$ vers une autre classe $B$, alors on peut inférer ses attributs en utilisant le type des attributs de la classe $B$.
 
 ##### `T-Invk`
 
-Si l'on définit une méthode `mtype`prenant en paramètre le nom d'une méthode et la classe/interface associée, et qui renvoie la liste des types de ses paramètres et son type de retour,
-et si dans notre environnement, il existe une expression $e_0$, tel que le jugement de type permet un cast en une expression $e_0$ de type classe/interface $T_0$,
+Si l'on définit une méthode `mtype`prenant en paramètre le nom d'une méthode ($m$) et la classe/interface associée ($T_0$), et qui renvoie la liste des types de ses paramètres associée $\overline{U}$ son type de retour $T$,
+et si dans notre environnement, il existe une expression $e_0$, que l'on peut caster en $e_0'$ en l'annotatant du type $T_0$,
+et que les paramètres $\overline{e}$ de cette méthode $m$ peuvent être castés par $\overline{U}$ avec la fonction $\lambda$`-mark`, en produisant une nouvelle liste $\overline{e'}$ de paramètres
+et que si dans notre environnement, cette nouvelle liste peut être associée à une nouvelle liste $\overline{e''}$ d'argument annotés par une liste de type $\overline{T}$, qui sont des sous-types de $\overline{U}$
 
+Alors, la méthode $m$ peut être appelée avec des paramètres castés si ces paramètres sont d'un type qui étend le type des paramètres d'origine.
 
 #### Règles de réduction
 
