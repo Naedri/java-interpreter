@@ -208,19 +208,23 @@ Si nous avions à recommencer, nous aurions une courbe d'apprentissage sur la co
 
 - `functional interface` : interface possédant une et une seule méthode abstraite (dont seule la signature est indiquée)
 - `abstract method`: une méthode sans implémentation
-- `default method` : une méthode déclarée dans une interface, et qui possède une implémentation par défault. 
+- `default method` : une méthode déclarée dans une interface, et qui possède une implémentation par défault
 - $\lambda$`-expression` / $\lambda$`-fonction`: fonction anonyme qui implémente une interface fonctionnelle mais qui est écrit sans type. 
-  - Elles ne peuvent cependant être appelées sans type.
+  - Elles ne peuvent cependant être appelées sans type
   - Elles permettent au programme de traiter les fonctions comme l'argument de méthode
 - `Object`: Base class of every class, which has no fields (so the invocations of super have no arguments) and no methods
 - `target type` : type d'une $\lambda$`-expression` inféré par le compilateur en fonction du contexte de celle-ci. Ce type est nécessaire pour que la $\lambda$`-expression` puisse être invoquée
 - `type elaboration` : la tâche de construire une représentation explicitement typée du programme
 - `type inference` : le problème de déterminer si un programme est bien typé
 - `type soudness` : 
+- `type judgement` : jugement du type d'une expression (représenté par $\leadsto$)
+  - quand le `type judgement` est appliqué sur une expression $e$, il produit un couple : $\langle T , e'\rangle$, avec $T$ le type de cast et $e'$ une nouvelle expression
+- `cast` : $\Gamma \vdash e : \langle T, e' \rangle$ <=> soit une expression $e$ composée d'une expression $e'$ castée par le type $T$
 - `params` vs. `args`: on définit les paramètres d'une fonction, qu'on appelle en lui passant des arguments
 
 #### concepts mathématiques
 
+- $x : T$ : on associe à la variable $x$ un type $T$
 - $\overline{x}$ : séquence possiblement vide de $x$
 - $\bullet$ : séquence vide <=> `[]`
 - $\sharp \overline{x}$ : taille de la séquence de $x$
@@ -243,11 +247,31 @@ $\frac{ \Gamma , x : T1 \vdash E : T2 }{ \Gamma \vdash (\lambda x : T1 . E) 
 
 qui dit que nous pouvons conclure que $ (\lambda x : T1 . E)$ a le type $T1 \rightarrow T2$ (c'est-à-dire que c'est une fonction de valeurs de type T1 vers des valeurs de type T2) dans le contexte $\Gamma$, à condition que dans le contexte étendu où nous portons l'hypothèse supplémentaire que x a le type T1, nous puissions montrer que E a le type T2.
 
-#### méthodes
+#### méthodes utilisées
 
 - `mtype` : permet d'obtenir le type d'une méthode m dans une classe C, en renvoyant une paire de `[liste de Type, Type]` <=> `types de paramètres de la méthode et le type de rentour de la méthode`
 - `mbody` : permet d'obtenir une paire de `(liste de String, Expr)` <=> `liste des paramètres, expression`
 - $\lambda$`mark` : fonction qui ajoute une définition de `cast` si et seulement si la $\lambda$`-expression` apparaît dans le code source
+- `fields` : fonction qui renvoie une liste  `(Type, String)` <=> `liste composée du tpye et du nom de chaque attributs`
+
+### Règles
+
+#### Règles de type 
+
+##### `T-Var`
+
+Si dans notre environnement, on a une variable $x$ de type $T$ ;
+Alors son type peut être jugé tel que $x \leadsto \langle T , x \rangle $. 
+
+##### `T-Field`
+
+Si dans notre environnement, il existe une expression $e_0$, tel que le jugement de type permet un cast en une expression $e_0$ de type classe $C_0$, 
+et si l'on définit les attributs de la classe $C_0$ par $\overline{T} \overline{f}$ ;
+Alors le type d'un attribut $f_i$ de $e$ peut être jugé tel que  $xleadsto \langle T , x \rangle $. 
+
+Autrement dit, on peut inférer les attributs d'une classe $A$ que l'on peut caster vers une autre classe $B$, en utilisant les types d'attributs de la classe $B$.
+
+#### Règles de réduction
 
 ### FJ vs Java
 
