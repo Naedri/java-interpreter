@@ -219,7 +219,7 @@ Si nous avions à recommencer, nous aurions une courbe d'apprentissage sur la co
 - `type soudness` : 
 - `type judgement` : jugement du type d'une expression (représenté par $\leadsto$)
   - quand le `type judgement` est appliqué sur une expression $e$, il produit un couple : $\langle T , e'\rangle$, avec $T$ le type de cast et $e'$ une nouvelle expression
-- `cast` : $\Gamma \vdash e : \langle T, e' \rangle$ <=> soit une expression $e$ composée d'une expression $e'$ castée par le type $T$
+- `cast` : $\Gamma \vdash e : \langle T, e' \rangle$ <=> soit une expression $e$ composée d'une expression $e'$ annotée par le type $T$ / castée en $T$
 - `params` vs. `args`: on définit les paramètres d'une fonction, qu'on appelle en lui passant des arguments
 
 #### concepts mathématiques
@@ -263,13 +263,21 @@ qui dit que nous pouvons conclure que $ (\lambda x : T1 . E)$ a le type $T1 \ri
 Si dans notre environnement, on a une variable $x$ de type $T$ ;
 Alors son type peut être jugé tel que $x \leadsto \langle T , x \rangle $. 
 
+Autrement dit, son type la variable $x$ peut-être annotée du type $T$ / castée en type $T$.
+
 ##### `T-Field`
 
 Si dans notre environnement, il existe une expression $e_0$, tel que le jugement de type permet un cast en une expression $e_0$ de type classe $C_0$, 
 et si l'on définit les attributs de la classe $C_0$ par $\overline{T} \overline{f}$ ;
 Alors le type d'un attribut $f_i$ de $e$ peut être jugé tel que  $xleadsto \langle T , x \rangle $. 
 
-Autrement dit, on peut inférer les attributs d'une classe $A$ que l'on peut caster vers une autre classe $B$, en utilisant les types d'attributs de la classe $B$.
+Autrement dit, si l'on peut caster une classe $A$ vers une autre classe $B$, alors on peut inférer ses attributs en utilisant le type des attributs de la classe $B$.
+
+##### `T-Invk`
+
+Si l'on définit une méthode `mtype`prenant en paramètre le nom d'une méthode et la classe/interface associée, et qui renvoie la liste des types de ses paramètres et son type de retour,
+et si dans notre environnement, il existe une expression $e_0$, tel que le jugement de type permet un cast en une expression $e_0$ de type classe/interface $T_0$,
+
 
 #### Règles de réduction
 
