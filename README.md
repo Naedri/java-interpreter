@@ -280,10 +280,18 @@ Autrement dit, si l'on peut caster une classe $A$ vers une autre classe $B$, alo
 
 Si l'on définit une méthode `mtype`prenant en paramètre le nom d'une méthode ($m$) et la classe/interface associée ($T_0$), et qui renvoie la liste des types de ses paramètres associée $\overline{U}$ son type de retour $T$,
 et si dans notre environnement, il existe une expression $e_0$, que l'on peut caster en $e_0'$ en l'annotatant du type $T_0$,
-et que les paramètres $\overline{e}$ de cette méthode $m$ peuvent être castés par $\overline{U}$ avec la fonction $\lambda$`-mark`, en produisant une nouvelle liste $\overline{e'}$ de paramètres
-et que si dans notre environnement, cette nouvelle liste peut être associée à une nouvelle liste $\overline{e''}$ d'argument annotés par une liste de type $\overline{T}$, qui sont des sous-types de $\overline{U}$
+et que les paramètres $\overline{e}$ de cette méthode $m$ peuvent être castés par $\overline{U}$ avec $\lambda$`-mark`, en produisant une nouvelle liste $\overline{e'}$ de paramètres,
+et que si dans notre environnement, cette nouvelle liste peut être associée à une nouvelle liste $\overline{e''}$ d'argument annotés par une liste de type $\overline{T}$, qui sont des sous-types de $\overline{U}$ ;
 
-Alors, la méthode $m$ peut être appelée avec des paramètres castés si ces paramètres sont d'un type qui étend le type des paramètres d'origine.
+Alors, la méthode $m$ peut être appelée avec des paramètres castés si ces paramètres sont d'un type qui étend le type des paramètres d'origine 
+(après que ces attributs aient été annotés pas $\lambda$`-mark`).
+
+##### `T-New`
+
+Après que les attributs (de type $\overline{U}$) d'une classe ait été annotés par $\lambda$`-mark`, 
+si l'on note que ces nouveaux attributs annotés peuvent être castés en un autre sous type ($\overline{T}$) ;
+
+Alors, un constructeur peut être appelé avec des paramètres castés si ces paramètres sont d'un type qui étend le type des paramètres d'origine
 
 #### Règles de réduction
 
