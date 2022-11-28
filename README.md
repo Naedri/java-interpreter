@@ -258,7 +258,7 @@ qui dit que nous pouvons conclure que $ (\lambda x : T1 . E)$ a le type $T1 \ri
 
 #### Règles de type 
 
-##### `T-Var`
+##### Expression typing : `T-Var`
 
 Si dans notre environnement, on a une variable $x$ de type $T$ ;
 
@@ -276,7 +276,7 @@ Alors le type d'un attribut $f_i$ de $e$ peut être jugé tel que  $xleadsto \la
 
 Autrement dit, si l'on peut caster une classe $A$ vers une autre classe $B$, alors on peut inférer ses attributs en utilisant le type des attributs de la classe $B$.
 
-##### `T-Invk`
+##### Expression typing : `T-Invk`
 
 Si l'on définit une méthode `mtype`prenant en paramètre le nom d'une méthode ($m$) et la classe/interface associée ($T_0$), et qui renvoie la liste des types de ses paramètres associée $\overline{U}$ son type de retour $T$,
 et si dans notre environnement, il existe une expression $e_0$, que l'on peut caster en $e_0'$ en l'annotatant du type $T_0$,
@@ -286,14 +286,14 @@ et que si dans notre environnement, cette nouvelle liste peut être associée à
 Alors, la méthode $m$ peut être appelée avec des paramètres castés si ces paramètres sont d'un type qui étend le type des paramètres d'origine 
 (après que ces attributs aient été annotés pas $\lambda$`mark`).
 
-##### `T-New`
+##### Expression typing : `T-New`
 
 Après que les attributs (de type $\overline{U}$) d'une classe ait été annotés par $\lambda$`mark`, 
 si l'on note que ces nouveaux attributs annotés peuvent être castés en un autre sous type ($\overline{T}$) ;
 
-Alors, un constructeur peut être appelé avec des paramètres castés si ces paramètres sont d'un type qui étend le type des paramètres d'origine
+Alors, un constructeur peut être appelé avec des paramètres castés si ces paramètres sont d'un type qui étend le type des paramètres d'origine.
 
-##### `T-Lam` *Comment typer une $\lambda$-expression$*
+##### Expression typing : `T-Lam`
 
 Si l'on a pu caster une expression $e$ en une interface (i.e. associer $e$ à $e'$, par l'annotation d'une interface), 
 et que l'interface en question n'est constituée que d'une seule méthode abstraite ;
@@ -304,9 +304,19 @@ Si une expression implémente une interface fonctionnelle,
 et que l'on peut y appliquer $\lambda$`mark` sur le corps de sa méthode, produisant ainsi une nouvelle expression $e''$,
 et que cette nouvelle expression peut être jugée en tant que sous type de l'expression $e'$ ;
 
-Alors, l'expression $e$ est une $\lambda$-expression$
+Alors, l'expression $e$ est une $\lambda$-expression$.
 
-#### Règles de réduction
+##### Method typing
+
+Produit une nouvelle instance de méthode, contenant le corps d'une expression possiblement annotée.
+
+##### Class typing
+
+Vérifie qu'une classe est bien formée.
+
+##### Interface typing
+
+Vérifie qu'une interface est bien formée, en regardant en plus de *Class typing*, que l'interface n'a ni constructeur ni attribut, et qu'elle contient au moins une méthode abstraite.
 
 ### FJ vs Java
 
