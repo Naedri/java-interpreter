@@ -266,7 +266,7 @@ Alors son type peut être jugé tel que $x \leadsto \langle T , x \rangle $.
 
 Autrement dit, son type la variable $x$ peut-être annotée du type $T$ / castée en type $T$.
 
-##### `T-Field`
+##### Expression typing : `T-Field`
 
 Si dans notre environnement, il existe une expression $e_0$, tel que le jugement de type permet un cast en une expression $e_0$ de type classe $C_0$
 (s'il existe une expression $e_0$ associée à $e_0'$ annotée du type $C_0$), 
