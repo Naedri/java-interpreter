@@ -318,7 +318,7 @@ Vérifie qu'une classe est bien formée.
 
 Vérifie qu'une interface est bien formée, en regardant en plus de *Class typing*, que l'interface n'a ni constructeur ni attribut, et qu'elle contient au moins une méthode abstraite.
 
-### FJ vs Java
+### Java vs FJ
 
 Featherweight Java (FJ) est une version allégée de Java, mais dont la sémantique est rigoureusement définie. Elle a été introduit par l'article suivant : 
 [Featherweight Java: A minimal core calculus for Java and GJ (Igarashi et al., 2001)](https://dl.acm.org/doi/10.1145/503502.503505). 
@@ -338,6 +338,10 @@ Les fonctionalités Java suivantes sont absentes de FJ :
 - états
 - control d'accès
 - exceptions
+
+| Java             | FJ            |
+| ---------------- | ------------- |
+| structural types | nominal types |
 
 ## [Fichier de log](https://pad.faire-ecole.org/s/suGTsvbBS#)
 
