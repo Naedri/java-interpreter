@@ -216,7 +216,7 @@ Si nous avions à recommencer, nous aurions une courbe d'apprentissage sur la co
 - `target type` : type d'une $\lambda$`-expression` inféré par le compilateur en fonction du contexte de celle-ci. Ce type est nécessaire pour que la $\lambda$`-expression` puisse être invoquée
 - `type elaboration` : la tâche de construire une représentation explicitement typée du programme
 - `type inference` : le problème de déterminer si un programme est bien typé
-- `type soudness` : le système de types de Java est sain (*sound*), dans le sens où, à moins qu'une exception ne soit levée, l'évaluation de toute expression produira une valeur d'un type "compatible" avec le type qui lui est attribué par le système de types [ref](https://link.springer.com/chapter/10.1007/3-540-48737-9_2)
+- `type soudness` : le système de types de Java est sain (*sound*), dans le sens où, à moins qu'une exception ne soit levée, l'évaluation de toute expression produira une valeur d'un type "compatible" avec le type qui lui est attribué par le système de types (cf. [ref](https://link.springer.com/chapter/10.1007/3-540-48737-9_2))
 - `type judgement` : jugement du type d'une expression (représenté par $\leadsto$)
   - quand le `type judgement` est appliqué sur une expression $e$, il produit un couple : $\langle T , e'\rangle$, avec $T$ le type de cast et $e'$ une nouvelle expression
 - `cast` : $\Gamma \vdash e : \langle T, e' \rangle$ <=> soit une expression $e$ composée d'une expression $e'$ annotée par le type $T$ / castée en $T$
